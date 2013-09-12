@@ -8,7 +8,7 @@ class OWScriptLogger extends eZPersistentObject {
     protected $_errorLogFile = 'owscriptlogger-error.log';
     protected $_warningLogFile = 'owscriptlogger-warning.log';
     protected $_noticeLogFile = 'owscriptlogger-notice.log';
-    protected $timer;
+    protected $_timer;
 
     protected static $cli;
 
@@ -31,6 +31,8 @@ class OWScriptLogger extends eZPersistentObject {
             self::writeError( $e->getMessage( ), 'log_message' );
             return FALSE;
         }
+        $trans = eZCharTransform::instance( );
+        $action = $trans->transformByGroup( $action, 'identifier' );
         switch( $logType ) {
             case self::ERRORLOG :
                 $logFile = $logger->_errorLogFile;
@@ -117,15 +119,15 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public static function writeError( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, self::ERRORLOG );
+        self::writeMessage( $msg, $action, self::ERRORLOG );
     }
 
     public static function writeWarning( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, self::WARNINGLOG );
+        self::writeMessage( $msg, $action, self::WARNINGLOG );
     }
 
     public static function writeNotice( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, self::NOTICELOG );
+        self::writeMessage( $msg, $action, self::NOTICELOG );
     }
 
     /* eZPersistentObject methods */
@@ -176,9 +178,13 @@ class OWScriptLogger extends eZPersistentObject {
             ),
             'increment_key' => 'id',
             'sort' => array( 'date' => 'asc' ),
+            'grouping' => array( ),
             'class_name' => 'OWScriptLogger',
             'name' => 'owscriptlogger',
-            'function_attributes' => array( ),
+            'function_attributes' => array(
+                'logs' => 'getLogs',
+                'actions' => 'getActions'
+            ),
             'set_functions' => array( )
         );
     }
@@ -192,8 +198,10 @@ class OWScriptLogger extends eZPersistentObject {
             'memory_usage_peak' => NULL
         );
         if( is_array( $identifier_or_row ) ) {
-            array_merge( $row, $identifier_or_row );
+            $row = array_merge( $row, $identifier_or_row );
         } else {
+            $trans = eZCharTransform::instance( );
+            $identifier_or_row = $trans->transformByGroup( $identifier_or_row, 'identifier' );
             $row['identifier'] = $identifier_or_row;
         }
         parent::__construct( $row );
@@ -201,23 +209,59 @@ class OWScriptLogger extends eZPersistentObject {
         if( empty( $identifier ) ) {
             throw new OWScriptLoggerException( __METHOD__ . " : Script logger identifier must be set" );
         } else {
-            $this->timer = new ezcDebugTimer();
+            $trans = eZCharTransform::instance( );
+            $newIdentifier = $trans->transformByGroup( $identifier, 'identifier' );
+            if( $newIdentifier != $identifier ) {
+                $this->setAttribute( 'identifier', $newIdentifier );
+            }
+            $this->_timer = new ezcDebugTimer( );
             $this->_errorLogFile = $identifier . '-error.log';
             $this->_warningLogFile = $identifier . '-warning.log';
             $this->_noticeLogFile = $identifier . '-notice.log';
-            //eZDebug::createAccumulator( 'OWScriptLogger_' . $identifier );
-            //eZDebug::accumulatorStart( 'OWScriptLogger_' . $identifier );
-            $this->timer->startTimer( $this->attribute( 'identifier' ), 'OWScriptLogger' );
+            $this->_timer->startTimer( $this->attribute( 'identifier' ), 'OWScriptLogger' );
         }
     }
 
     public function __destruct( ) {
-        $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
-        $this->setAttribute( 'memory_usage', memory_get_usage( ) );
-        $this->timer->stopTimer( $this->attribute( 'identifier' ) );
-        $timeData = $this->timer->getTimeData();
-        $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
-        $this->store( );
+        if( $this->attribute( 'runtime' ) == NULL ) {
+            $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
+            $this->setAttribute( 'memory_usage', memory_get_usage( ) );
+            $this->_timer->stopTimer( $this->attribute( 'identifier' ) );
+            $timeData = $this->_timer->getTimeData( );
+            $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
+            $this->store( );
+        }
+    }
+
+    public function getLogs( ) {
+        return OWScriptLogger_Log::fetchList( array( 'owscriptlogger_id' => $this->attribute( 'id' ) ) );
+    }
+
+    public function getActions( ) {
+        return OWScriptLogger_Log::fetchActionList( array( 'owscriptlogger_id' => $this->attribute( 'id' ) ) );
+    }
+
+    static function fetchList( $conds = array(), $limit = NULL ) {
+        return self::fetchObjectList( self::definition( ), null, $conds, array( 'date' => 'asc', ), $limit, true, false, null, null, null );
+    }
+
+    static function fetch( $id ) {
+        $conds = array( 'id' => $id );
+        return self::fetchObject( self::definition( ), null, $conds, array( 'date' => 'asc', ) );
+    }
+
+    static function fetchIdentifierList( $conds = array(), $limit = NULL ) {
+        $identifierList = self::fetchObjectList( self::definition( ), array( 'identifier' ), $conds, null, $limit, false, array( 'identifier' ), null, null, null );
+        array_walk( $identifierList, function( &$item, $key ) {
+            $item = $item['identifier'];
+        } );
+        return $identifierList;
+    }
+
+    static function removeList( $IDList ) {
+        OWScriptLogger_Log::removeByOWScriptLoggerId( $IDList );
+        $conds = array( 'id' => array( $IDList ) );
+        return self::removeObject( self::definition( ), $conds );
     }
 
 }

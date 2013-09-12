@@ -36,13 +36,9 @@ class OWScriptLogger_Log extends eZPersistentObject {
                     'required' => false
                 ),
             ),
-            'keys' => array(
-                'owscriptlogger_id',
-                'level',
-                'action',
-                'date'
-            ),
+            'keys' => array( ),
             'sort' => array( 'date' => 'asc' ),
+            'grouping' => array( ),
             'class_name' => 'OWScriptLogger_Log',
             'name' => 'owscriptlogger_log',
             'function_attributes' => array( ),
@@ -54,6 +50,23 @@ class OWScriptLogger_Log extends eZPersistentObject {
         $object = new self( $row );
         $object->store( );
         return $object;
+    }
+
+    static function fetchList( $conds = array(), $limit = NULL ) {
+        return self::fetchObjectList( self::definition( ), null, $conds, array( 'date' => 'asc', ), $limit, true, false, null, null, null );
+    }
+
+    static function fetchActionList( $conds = array(), $limit = NULL ) {
+        $actionList = self::fetchObjectList( self::definition( ), array( 'action' ), $conds, null, $limit, false, array( 'action' ), null, null, null );
+        array_walk( $actionList, function( &$item, $key ) {
+            $item = $item['action'];
+        } );
+        return $actionList;
+    }
+
+    static function removeByOWScriptLoggerId( $IDList ) {
+        $conds = array( 'owscriptlogger_id' => array( $IDList ) );
+        return self::removeObject( self::definition( ), $conds );
     }
 
 }

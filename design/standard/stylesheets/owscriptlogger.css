@@ -1,0 +1,56 @@
+th.logger_date {
+    width: 11em;
+}
+
+th.logger_view_log {
+    width: 6.5em;
+}
+
+th.logger_action {
+width: 17em;
+}
+
+td.logger_date, td.logger_view_log {
+    text-align: center;
+}
+
+th.logger_runtime, th.logger_memory_usage, th.logger_memory_usage_peak,
+td.logger_runtime, td.logger_memory_usage, td.logger_memory_usage_peak {
+    text-align: right;
+}
+
+.yui-dt-even.level_notice {
+    background-color: #FAFFF5;
+}
+
+.yui-dt-odd.level_notice {
+    background-color: #EFFFE1;
+}
+
+.yui-dt tbody tr.level_notice:hover {
+    background-color: #E3FFCD;
+}
+
+.yui-dt-even.level_warning {
+    background-color: #FFEFCD;
+}
+
+.yui-dt-odd.level_warning {
+    background-color: #FFE8B9;
+}
+
+.yui-dt tbody tr.level_warning:hover {
+    background-color: #FFE1A5;
+}
+
+.yui-dt-even.level_error {
+    background-color: #FFE1E7;
+}
+
+.yui-dt-odd.level_error {
+    background-color: #FFCDD7;
+}
+
+.yui-dt tbody tr.level_error:hover {
+    background-color: #FFB9C7;
+}
