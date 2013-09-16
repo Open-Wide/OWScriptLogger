@@ -21,7 +21,7 @@ OWScriptLogger::startLog( $script_identifier );
 ```php
 OWScriptLogger::logNotice( $message, $action );
 OWScriptLogger::logWarning( $message, $action );
-OWScriptLogger::logDelete( $message, $action );
+OWScriptLogger::logError( $message, $action );
 ```
 
 Enjoy !!
