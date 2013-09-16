@@ -8,7 +8,7 @@ class OWScriptLogger extends eZPersistentObject {
     protected $_errorLogFile = 'owscriptlogger-error.log';
     protected $_warningLogFile = 'owscriptlogger-warning.log';
     protected $_noticeLogFile = 'owscriptlogger-notice.log';
-    protected $_timer;
+    protected static $_timer;
 
     protected static $cli;
 
@@ -20,8 +20,11 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public static function startLog( $logIdentifier ) {
-        $GLOBALS['OWScriptLoggerInstance'] = new OWScriptLogger( $logIdentifier );
-        $GLOBALS['OWScriptLoggerInstance']->store( );
+        $logger = new OWScriptLogger( $logIdentifier );
+        $logger->store( );
+        $GLOBALS['OWScriptLoggerInstance'] = $logger;
+        OWScriptLogger::$_timer = new ezcDebugTimer( );
+        OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
     }
 
     public static function logMessage( $msg, $action = 'undefined', $bPrintMsg = true, $logType = self::NOTICELOG ) {
@@ -214,20 +217,18 @@ class OWScriptLogger extends eZPersistentObject {
             if( $newIdentifier != $identifier ) {
                 $this->setAttribute( 'identifier', $newIdentifier );
             }
-            $this->_timer = new ezcDebugTimer( );
             $this->_errorLogFile = $identifier . '-error.log';
             $this->_warningLogFile = $identifier . '-warning.log';
             $this->_noticeLogFile = $identifier . '-notice.log';
-            $this->_timer->startTimer( $this->attribute( 'identifier' ), 'OWScriptLogger' );
         }
     }
 
     public function __destruct( ) {
-        if( $this->attribute( 'runtime' ) == NULL ) {
+        if( OWScriptLogger::$_timer instanceof ezcDebugTimer ) {
             $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
             $this->setAttribute( 'memory_usage', memory_get_usage( ) );
-            $this->_timer->stopTimer( $this->attribute( 'identifier' ) );
-            $timeData = $this->_timer->getTimeData( );
+            OWScriptLogger::$_timer->stopTimer( $this->attribute( 'identifier' ) );
+            $timeData = OWScriptLogger::$_timer->getTimeData( );
             $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
             $this->store( );
         }
@@ -252,10 +253,12 @@ class OWScriptLogger extends eZPersistentObject {
 
     static function fetchIdentifierList( $conds = array(), $limit = NULL ) {
         $identifierList = self::fetchObjectList( self::definition( ), array( 'identifier' ), $conds, null, $limit, false, array( 'identifier' ), null, null, null );
-        array_walk( $identifierList, function( &$item, $key ) {
-            $item = $item['identifier'];
-        } );
-        return $identifierList;
+        if( is_array( $identifierList ) ) {
+            array_walk( $identifierList, function( &$item, $key ) {
+                $item = $item['identifier'];
+            } );
+            return $identifierList;
+        }
     }
 
     static function removeList( $IDList ) {
