@@ -25,7 +25,7 @@
             <div class="block">
                 <div class="yui-dt">
                     <form action={'owscriptlogger/logs'|ezurl()} name="LogList" method="post">
-                        <table class="log_list">
+                        <table class="list log_list">
                             <thead>
                                 <tr class="yui-dt-first yui-dt-last" >
                                     <th class="toggle_checkboxes"><div class="yui-dt-liner"><img src={'toggle-button-16x16.gif'|ezimage} alt="{'Invert selection.'|i18n( 'design/admin/class/classlist' )}" title="{'Invert selection.'|i18n( 'design/admin/class/classlist' )}" /></div></th>
@@ -43,9 +43,9 @@
                                         <td class="yui-dt0-col-checkbox yui-dt-col-checkbox yui-dt-first"><div class="yui-dt-liner"><input type="checkbox" name="DeleteIDArray[]" value="{$logger.id}"></div></td>
                                         <td class="logger_date"><div class="yui-dt-liner">{$logger.date}</div></td>
                                         <td class="logger_identifier"><div class="yui-dt-liner">{$logger.identifier}</div></td>
-                                        <td class="logger_runtime"><div class="yui-dt-liner">{$logger.runtime} s</div></td>
-                                        <td class="logger_memory_usage"><div class="yui-dt-liner">{$logger.memory_usage|si('byte')}</div></td>
-                                        <td class="logger_memory_usage_peak"><div class="yui-dt-liner">{$logger.memory_usage_peak|si('byte')}</div></td>
+                                        <td class="logger_runtime"><div class="yui-dt-liner">{if $logger.runtime}{$logger.runtime} s{/if}</div></td>
+                                        <td class="logger_memory_usage"><div class="yui-dt-liner">{if $logger.memory_usage}{$logger.memory_usage|si('byte')}{/if}</div></td>
+                                        <td class="logger_memory_usage_peak"><div class="yui-dt-liner">{if $logger.memory_usage_peak}{$logger.memory_usage_peak|si('byte')}{/if}</div></td>
                                         <td class="logger_view_log"><a href={concat('owscriptlogger/logs/', $logger.id)|ezurl()}>{'View logs'|i18n('owscriptlogger/logs' )}</a></td>
                                     </tr>
                                 {/foreach}

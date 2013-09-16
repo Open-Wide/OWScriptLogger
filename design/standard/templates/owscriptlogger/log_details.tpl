@@ -26,7 +26,7 @@
         <div class="context-attributes">
             <div class="block">
                 <div class="yui-dt">
-	                <table class="log_list">
+	                <table class="list log_list">
 	                    <thead>
 	                        <tr class="yui-dt-first yui-dt-last">
 	                            <th class="logger_date"><div class="yui-dt-liner">{'Date'|i18n('owscriptlogger/logs' )}</div></th>
