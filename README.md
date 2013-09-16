@@ -1,9 +1,9 @@
 OWScriptLogger
 ==============
 
-Extension : OW Script Logger v1.1
-Requires : eZ Publish 4.x.x (not tested on 3.X)
-Author : Open Wide <http://www.openwide.fr>
+__Extension__ : OW Script Logger v1.1
+__Requires__ : eZ Publish 4.x.x (not tested on 3.X)
+__Author__ : Open Wide <http://www.openwide.fr>
 
 What is OWScriptLogger?
 -------------------
@@ -14,7 +14,7 @@ Usage
 ------
 1. At the beginning of your script, instantiate the logger :
 ```php
-OWScriptLogger::startLog( 'script_identifier' );
+OWScriptLogger::startLog( $script_identifier );
 ```
 
 2. In the script, log events with these methodes :
