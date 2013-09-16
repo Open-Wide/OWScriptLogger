@@ -1,8 +1,10 @@
 OWScriptLogger
 ==============
 
-__Extension__ : OW Script Logger v1.1
+__Extension__ : OW Script Logger v1.0
+
 __Requires__ : eZ Publish 4.x.x (not tested on 3.X)
+
 __Author__ : Open Wide <http://www.openwide.fr>
 
 What is OWScriptLogger?
