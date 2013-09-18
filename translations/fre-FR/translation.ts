@@ -98,8 +98,9 @@
         <source>Identifers</source>
         <translation>Identifiant</translation>
     </message>
+    <message>
+        <source>No data</source>
+        <translation>Aucune donnée</translation>
+    </message>
 </context>
-<!--context>
-    <name>owscriptlogger/graphs</name>
-</context-->
 </TS>
