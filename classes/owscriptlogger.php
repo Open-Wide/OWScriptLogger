@@ -254,11 +254,11 @@ class OWScriptLogger extends eZPersistentObject {
     static function fetchIdentifierList( $conds = array(), $limit = NULL ) {
         $identifierList = self::fetchObjectList( self::definition( ), array( 'identifier' ), $conds, null, $limit, false, array( 'identifier' ), null, null, null );
         if( is_array( $identifierList ) ) {
-            array_walk( $identifierList, function( &$item, $key ) {
-                $item = $item['identifier'];
-            } );
-            return $identifierList;
+            foreach( $identifierList as $key => $item ) {
+                $identifierList[$key] = $item['identifier'];
+            }
         }
+        return $identifierList;
     }
 
     static function removeList( $IDList ) {

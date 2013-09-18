@@ -58,9 +58,11 @@ class OWScriptLogger_Log extends eZPersistentObject {
 
     static function fetchActionList( $conds = array(), $limit = NULL ) {
         $actionList = self::fetchObjectList( self::definition( ), array( 'action' ), $conds, null, $limit, false, array( 'action' ), null, null, null );
-        array_walk( $actionList, function( &$item, $key ) {
-            $item = $item['action'];
-        } );
+        if( is_array( $actionList ) ) {
+            foreach( $actionList as $key => $item ) {
+                $actionList[$key] = $item['action'];
+            }
+        }
         return $actionList;
     }
 
