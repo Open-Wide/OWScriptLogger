@@ -2,8 +2,8 @@
 <context>
     <name>kernel/navigationpart</name>
     <message>
-        <source>OW Script Logger</source>
-        <translation>OW Script Logger</translation>
+        <source>Script logger</source>
+        <translation>Script logger</translation>
     </message>
 </context>
 <context>

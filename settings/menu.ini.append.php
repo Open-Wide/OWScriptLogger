@@ -1,14 +1,14 @@
 <?php /*
 
 [NavigationPart]
-Part[owscriptlogger]=OW Script Logger
+Part[owscriptlogger]=Script logger
 
 [TopAdminMenu]
 Tabs[]=owscriptlogger
 
 [Topmenu_owscriptlogger]
 NavigationPartIdentifier=owscriptlogger
-Name=OW Script Logger
+Name=Script logger
 Tooltip=Script logger
 URL[]
 URL[default]=owscriptlogger/logs
