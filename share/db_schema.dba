@@ -33,6 +33,27 @@ $schema = array(
                 'size' => 11,
                 'default' => NULL,
             ),
+            'notice_count' => array(
+                'type' => 'int',
+                'size' => 11,
+                'default' => NULL,
+            ),
+            'warning_count' => array(
+                'type' => 'int',
+                'size' => 11,
+                'default' => NULL,
+            ),
+            'error_count' => array(
+                'type' => 'int',
+                'size' => 11,
+                'default' => NULL,
+            ),
+            'status' => array(
+                'length' => 100,
+                'type' => 'varchar',
+                'not_null' => TRUE,
+                'default' => 'running',
+            ),
         ),
         'indexes' => array( 'PRIMARY' => array(
                 'type' => 'primary',
