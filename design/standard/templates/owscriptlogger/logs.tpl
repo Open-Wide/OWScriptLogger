@@ -23,6 +23,11 @@
                                     {/foreach}
                                     <label>{'Date'|i18n('owscriptlogger/logs' )}</label>
                                     <input class="date_filter" />
+                                    <label>{'Status'|i18n('owscriptlogger/logs' )}</label>
+	                                <input type="checkbox" class="status_filter" id="status_running" checked="checked" />{'running'|i18n('owscriptlogger/logs' )}
+	                                <input type="checkbox" class="status_filter" id="status_finished" checked="checked" />{'finished'|i18n('owscriptlogger/logs' )}
+	                                <input type="checkbox" class="status_filter" id="status_error" checked="checked" />{'error'|i18n('owscriptlogger/logs' )}
+                                    <input type="checkbox" class="status_filter" id="status_manually_stoped" checked="checked" />{'manually_stoped'|i18n('owscriptlogger/logs' )}
                                 </fieldset>
                             </div>
                         </div>
@@ -50,7 +55,7 @@
                                             </thead>
                                             <tbody class="yui-dt-data">
                                                 {foreach $logger_list as $logger sequence array( 'yui-dt-even', 'yui-dt-odd' ) as $style}
-                                                    <tr class="{if $index|eq(0)}yui-dt-first{/if} {$style} identifier_{$logger.identifier}">
+                                                    <tr class="{if $index|eq(0)}yui-dt-first{/if} {$style} identifier_{$logger.identifier} status_{$logger.status}">
                                                         <td class="yui-dt0-col-checkbox yui-dt-col-checkbox yui-dt-first"><div class="yui-dt-liner"><input type="checkbox" name="DeleteIDArray[]" value="{$logger.id}"></div></td>
                                                         <td class="logger_date"><div class="yui-dt-liner">{$logger.date}</div></td>
                                                         <td class="logger_identifier"><div class="yui-dt-liner">{$logger.identifier}</div></td>

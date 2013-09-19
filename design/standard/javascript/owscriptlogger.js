@@ -42,14 +42,11 @@ $(document).ready(function() {
 
 
     $(".identifier_filter").change(function() {
-        var checked = $(this);
-        if (checked.is(':checked')) {
-            $("tr." + checked.attr("id")).show();
-        } else {
-            $("tr." + checked.attr("id")).hide();
-        }
-        $("tr:visible:odd").removeClass("yui-dt-odd").addClass("yui-dt-even");
-        $("tr:visible:even").removeClass("yui-dt-even").addClass("yui-dt-odd");
+        filter_log_list($(this), ".status_filter");
+    });
+
+    $(".status_filter").change(function() {
+        filter_log_list($(this), ".identifier_filter");
     });
 
     $(".date_filter").keyup(function() {
