@@ -39,6 +39,7 @@
                                                     <th class="logger_memory_usage" rowspan="2"><div class="yui-dt-liner">{'Memory usage'|i18n('owscriptlogger/logs' )}</div></th>
                                                     <th class="logger_memory_usage_peak" rowspan="2"><div class="yui-dt-liner">{'Memory usage peak'|i18n('owscriptlogger/logs' )}</div></th>
                                                     <th class="logger_logs_count" colspan="3"><div class="yui-dt-liner">{'Logs count'|i18n('owscriptlogger/logs' )}</div></th>
+                                                    <th class="logger_status" rowspan="2"><div class="yui-dt-liner">{'Status'|i18n('owscriptlogger/logs' )}</div></th>
                                                     <th class="logger_view_log" rowspan="2"></th>
                                                 </tr>
                                                 <tr>
@@ -59,6 +60,7 @@
                                                         <td class="logger_notice_count"><div class="yui-dt-liner">{$logger.notice_count}</div></td>
                                                         <td class="logger_warning_count"><div class="yui-dt-liner">{$logger.warning_count}</div></td>
                                                         <td class="logger_error_count"><div class="yui-dt-liner">{$logger.error_count}</div></td>
+                                                        <td class="logger_status"><div class="yui-dt-liner">{$logger.status|i18n('owscriptlogger/logs' )}</div></td>
                                                         <td class="logger_view_log"><a href={concat('owscriptlogger/logs/', $logger.id)|ezurl()}>{'View logs'|i18n('owscriptlogger/logs' )}</a></td>
                                                     </tr>
                                                 {/foreach}

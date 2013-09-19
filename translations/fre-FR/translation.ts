@@ -106,5 +106,25 @@
         <source>Logs count</source>
         <translation>Nombre de logs</translation>
     </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>running</source>
+        <translation>En cours</translation>
+    </message>
+    <message>
+        <source>finished</source>
+        <translation>Terminé avec succès</translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation>Erreur fatale</translation>
+    </message>
+    <message>
+        <source>manually_stoped</source>
+        <translation>Stopé manuellement</translation>
+    </message>
 </context>
 </TS>
