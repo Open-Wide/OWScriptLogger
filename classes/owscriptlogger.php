@@ -186,7 +186,10 @@ class OWScriptLogger extends eZPersistentObject {
             'name' => 'owscriptlogger',
             'function_attributes' => array(
                 'logs' => 'getLogs',
-                'actions' => 'getActions'
+                'actions' => 'getActions',
+                'notice_count' => 'countNotice',
+                'warning_count' => 'countWarning',
+                'error_count' => 'countError',
             ),
             'set_functions' => array( )
         );
@@ -240,6 +243,25 @@ class OWScriptLogger extends eZPersistentObject {
 
     public function getActions( ) {
         return OWScriptLogger_Log::fetchActionList( array( 'owscriptlogger_id' => $this->attribute( 'id' ) ) );
+    }
+
+    public function countNotice( ) {
+        return $this->countLog( self::NOTICELOG );
+    }
+
+    public function countWarning( ) {
+        return $this->countLog( self::WARNINGLOG );
+    }
+
+    public function countError( ) {
+        return $this->countLog( self::ERRORLOG );
+    }
+
+    public function countLog( $level ) {
+        return OWScriptLogger_Log::countLog( array(
+            'owscriptlogger_id' => $this->attribute( 'id' ),
+            'level' => $level
+        ) );
     }
 
     static function fetchList( $conds = array(), $limit = NULL ) {

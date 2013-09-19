@@ -102,5 +102,9 @@
         <source>No data</source>
         <translation>Aucune donnée</translation>
     </message>
+    <message>
+        <source>Logs count</source>
+        <translation>Nombre de logs</translation>
+    </message>
 </context>
 </TS>

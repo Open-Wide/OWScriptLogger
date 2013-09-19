@@ -1,21 +1,25 @@
-th.logger_date {
+table.list th.logger_date {
     width: 11em;
 }
 
-th.logger_view_log {
+table.list th.logger_view_log {
     width: 6.5em;
 }
 
-th.logger_action {
-width: 17em;
+table.list th.logger_action {
+    width: 17em;
 }
 
-td.logger_date, td.logger_view_log {
+div.context-attributes table.list th {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+table.list td.logger_date, table.list td.logger_view_log {
     text-align: center;
 }
 
-th.logger_runtime, th.logger_memory_usage, th.logger_memory_usage_peak,
-td.logger_runtime, td.logger_memory_usage, td.logger_memory_usage_peak {
+table.list td.logger_runtime, table.list td.logger_memory_usage, table.list td.logger_memory_usage_peak, table.list td.logger_notice_count, table.list td.logger_warning_count, table.list td.logger_error_count {
     text-align: right;
 }
 

@@ -66,6 +66,10 @@ class OWScriptLogger_Log extends eZPersistentObject {
         return $actionList;
     }
 
+    static function countLog( $conds = array() ) {
+        return self::count( self::definition( ), $conds );
+    }
+
     static function removeByOWScriptLoggerId( $IDList ) {
         $conds = array( 'owscriptlogger_id' => array( $IDList ) );
         return self::removeObject( self::definition( ), $conds );
