@@ -1,9 +1,61 @@
 <?php
 
+$isPcntl = function_exists( 'pcntl_signal' );
+if( $isPcntl ) {
+    declare( ticks = 1 );
+    function OWScriptLoggerSignalHandler( $signal ) {
+        try {
+            $logger = OWScriptLogger::instance( );
+        } catch( Exceoption $e ) {
+            return FALSE;
+        }
+        switch( $signal ) {
+            case SIGTERM :
+            case SIGINT :
+                $logger->logNotice( 'Process stoped', 'signal' );
+                $logger->storeExtraInfo( );
+                $logger->setAttribute( 'status', OWScriptLogger::STOPED_STATUS );
+                $logger->store( );
+                posix_kill( posix_getpid( ), SIGKILL );
+        }
+    }
+
+    pcntl_signal( SIGTERM, 'OWScriptLoggerSignalHandler' );
+    pcntl_signal( SIGINT, 'OWScriptLoggerSignalHandler' );
+}
+
+function OWScriptLoggerFatalError( ) {
+    try {
+        $logger = OWScriptLogger::instance( );
+    } catch( Exceoption $e ) {
+        return FALSE;
+    }
+    $error = error_get_last( );
+    $logger->logError( $error['message'], 'fatal_error' );
+    $logger->storeExtraInfo( );
+    $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+    $logger->store( );
+}
+
+function OWScriptLoggerCleanupHandler( ) {
+    $db = eZDB::instance( );
+    if( $db->errorNumber( ) > 0 ) {
+        $logger->logError( 'A DB transaction error occurred : #' . $db->errorNumber( ) . ' - "' . $db->errorMessage( ) . '"', 'fatal_error' );
+        $logger->storeExtraInfo( );
+        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+        $logger->store( );
+    }
+}
+
 class OWScriptLogger extends eZPersistentObject {
     const NOTICELOG = 'notice';
     const ERRORLOG = 'error';
     const WARNINGLOG = 'warning';
+
+    const RUNNING_STATUS = 'running';
+    const FINISHED_STATUS = 'finished';
+    const ERROR_STATUS = 'error';
+    const STOPED_STATUS = 'manually_stoped';
 
     protected $_errorLogFile = 'owscriptlogger-error.log';
     protected $_warningLogFile = 'owscriptlogger-warning.log';
@@ -22,6 +74,8 @@ class OWScriptLogger extends eZPersistentObject {
     public static function startLog( $logIdentifier ) {
         $logger = new OWScriptLogger( $logIdentifier );
         $logger->store( );
+        eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
+        eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
         $GLOBALS['OWScriptLoggerInstance'] = $logger;
         OWScriptLogger::$_timer = new ezcDebugTimer( );
         OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
@@ -174,6 +228,30 @@ class OWScriptLogger extends eZPersistentObject {
                     'default' => null,
                     'required' => false
                 ),
+                'notice_count' => array(
+                    'name' => 'notice_count',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false
+                ),
+                'warning_count' => array(
+                    'name' => 'warning_count',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false
+                ),
+                'error_count' => array(
+                    'name' => 'error_count',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false
+                ),
+                'status' => array(
+                    'name' => 'status',
+                    'datatype' => 'string',
+                    'default' => self::RUNNING_STATUS,
+                    'required' => true
+                ),
             ),
             'keys' => array(
                 'identifier',
@@ -186,10 +264,7 @@ class OWScriptLogger extends eZPersistentObject {
             'name' => 'owscriptlogger',
             'function_attributes' => array(
                 'logs' => 'getLogs',
-                'actions' => 'getActions',
-                'notice_count' => 'countNotice',
-                'warning_count' => 'countWarning',
-                'error_count' => 'countError',
+                'actions' => 'getActions'
             ),
             'set_functions' => array( )
         );
@@ -226,13 +301,22 @@ class OWScriptLogger extends eZPersistentObject {
         }
     }
 
+    public function storeExtraInfo( ) {
+        $this->setAttribute( 'notice_count', $this->countNotice( ) );
+        $this->setAttribute( 'warning_count', $this->countWarning( ) );
+        $this->setAttribute( 'error_count', $this->countError( ) );
+        $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
+        $this->setAttribute( 'memory_usage', memory_get_usage( ) );
+        OWScriptLogger::$_timer->stopTimer( $this->attribute( 'identifier' ) );
+        $timeData = OWScriptLogger::$_timer->getTimeData( );
+        $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
+        $this->store( );
+    }
+
     public function __destruct( ) {
         if( OWScriptLogger::$_timer instanceof ezcDebugTimer ) {
-            $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
-            $this->setAttribute( 'memory_usage', memory_get_usage( ) );
-            OWScriptLogger::$_timer->stopTimer( $this->attribute( 'identifier' ) );
-            $timeData = OWScriptLogger::$_timer->getTimeData( );
-            $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
+            $this->storeExtraInfo( );
+            $this->setAttribute( 'status', self::FINISHED_STATUS );
             $this->store( );
         }
     }
