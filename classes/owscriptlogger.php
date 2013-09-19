@@ -218,13 +218,13 @@ class OWScriptLogger extends eZPersistentObject {
                 ),
                 'memory_usage' => array(
                     'name' => 'memory_usage',
-                    'datatype' => 'float',
+                    'datatype' => 'integer',
                     'default' => null,
                     'required' => false
                 ),
                 'memory_usage_peak' => array(
                     'name' => 'memory_usage_peak',
-                    'datatype' => 'float',
+                    'datatype' => 'integer',
                     'default' => null,
                     'required' => false
                 ),
