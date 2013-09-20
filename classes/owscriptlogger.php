@@ -27,11 +27,30 @@ if( $isPcntl ) {
 function OWScriptLoggerFatalError( ) {
     try {
         $logger = OWScriptLogger::instance( );
-    } catch( Exceoption $e ) {
+    } catch( Exception $e ) {
         return FALSE;
     }
-    $error = error_get_last( );
-    $logger->logError( $error['message'], 'fatal_error' );
+    if( $logger->attribute( 'status' ) == OWScriptLogger::RUNNING_STATUS ) {
+        $error = error_get_last( );
+        if( $error && $error['message'] ) {
+            $message = $error['message'] . PHP_EOL . $error['file'] . ' on line ' . $error['line'];
+        } else {
+            $message = "Unknown error";
+        }
+        $logger->logError( $message, 'fatal_error' );
+        $logger->storeExtraInfo( );
+        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+        $logger->store( );
+    }
+}
+
+function OWScriptLoggerExceptionHandler( Exception $e ) {
+    try {
+        $logger = OWScriptLogger::instance( );
+    } catch( Exception $e ) {
+        return FALSE;
+    }
+    $logger->logError( $e->getMessage( ) . PHP_EOL . $e->getTraceAsString( ), 'exception' );
     $logger->storeExtraInfo( );
     $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
     $logger->store( );
@@ -76,9 +95,22 @@ class OWScriptLogger extends eZPersistentObject {
         $logger->store( );
         eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
         eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
+        set_exception_handler( 'OWScriptLoggerExceptionHandler' );
         $GLOBALS['OWScriptLoggerInstance'] = $logger;
         OWScriptLogger::$_timer = new ezcDebugTimer( );
         OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
+    }
+
+    public static function exceptionHandler( Exception $e ) {
+        try {
+            $logger = OWScriptLogger::instance( );
+        } catch( Exception $e ) {
+            return FALSE;
+        }
+        $logger->logError( $e->getMessage( ), 'exception' );
+        $logger->storeExtraInfo( );
+        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+        $logger->store( );
     }
 
     public static function logMessage( $msg, $action = 'undefined', $bPrintMsg = true, $logType = self::NOTICELOG ) {
@@ -316,8 +348,10 @@ class OWScriptLogger extends eZPersistentObject {
     public function __destruct( ) {
         if( OWScriptLogger::$_timer instanceof ezcDebugTimer ) {
             $this->storeExtraInfo( );
-            $this->setAttribute( 'status', self::FINISHED_STATUS );
-            $this->store( );
+            if( $this->attribute( 'status' ) == self::RUNNING_STATUS ) {
+                $this->setAttribute( 'status', self::FINISHED_STATUS );
+                $this->store( );
+            }
         }
     }
 
