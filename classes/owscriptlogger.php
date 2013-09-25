@@ -91,6 +91,9 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public static function startLog( $logIdentifier ) {
+        $trans = eZCharTransform::instance( );
+        $logIdentifier = strtolower( preg_replace( '/([A-Z])/', '_$1', $logIdentifier ) );
+        $logIdentifier = $trans->transformByGroup( $logIdentifier, 'identifier' );
         $logger = new OWScriptLogger( $logIdentifier );
         $logger->store( );
         eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
@@ -101,18 +104,6 @@ class OWScriptLogger extends eZPersistentObject {
         OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
     }
 
-    public static function exceptionHandler( Exception $e ) {
-        try {
-            $logger = OWScriptLogger::instance( );
-        } catch( Exception $e ) {
-            return FALSE;
-        }
-        $logger->logError( $e->getMessage( ), 'exception' );
-        $logger->storeExtraInfo( );
-        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
-        $logger->store( );
-    }
-
     public static function logMessage( $msg, $action = 'undefined', $bPrintMsg = true, $logType = self::NOTICELOG ) {
         try {
             $logger = self::instance( );
@@ -121,6 +112,7 @@ class OWScriptLogger extends eZPersistentObject {
             return FALSE;
         }
         $trans = eZCharTransform::instance( );
+        $action = strtolower( preg_replace( '/([A-Z])/', '_$1', $action ) );
         $action = $trans->transformByGroup( $action, 'identifier' );
         switch( $logType ) {
             case self::ERRORLOG :
@@ -227,8 +219,6 @@ class OWScriptLogger extends eZPersistentObject {
                 'id' => array(
                     'name' => 'id',
                     'datatype' => 'integer',
-                    'default' => 0,
-                    'required' => true
                 ),
                 'identifier' => array(
                     'name' => 'identifier',
@@ -388,6 +378,14 @@ class OWScriptLogger extends eZPersistentObject {
 
     static function fetch( $id ) {
         $conds = array( 'id' => $id );
+        return self::fetchObject( self::definition( ), null, $conds, array( 'date' => 'asc', ) );
+    }
+
+    static function fetchByIdentiferAndDate( $identifier, $date ) {
+        $conds = array(
+            'identifier' => $identifier,
+            'date' => $date
+        );
         return self::fetchObject( self::definition( ), null, $conds, array( 'date' => 'asc', ) );
     }
 
