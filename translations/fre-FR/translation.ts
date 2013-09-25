@@ -124,7 +124,7 @@
     </message>
     <message>
         <source>manually_stoped</source>
-        <translation>Stopé manuellement</translation>
+        <translation>Stoppé manuellement</translation>
     </message>
 </context>
 </TS>
