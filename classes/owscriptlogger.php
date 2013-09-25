@@ -13,9 +13,11 @@ if( $isPcntl ) {
             case SIGTERM :
             case SIGINT :
                 $logger->logNotice( 'Process stoped', 'signal' );
-                $logger->storeExtraInfo( );
-                $logger->setAttribute( 'status', OWScriptLogger::STOPED_STATUS );
-                $logger->store( );
+                if( $logger::$_storeObjectInDB ) {
+                    $logger->storeExtraInfo( );
+                    $logger->setAttribute( 'status', OWScriptLogger::STOPED_STATUS );
+                    $logger->store( );
+                }
                 posix_kill( posix_getpid( ), SIGKILL );
         }
     }
@@ -38,9 +40,11 @@ function OWScriptLoggerFatalError( ) {
             $message = "Unknown error";
         }
         $logger->logError( $message, 'fatal_error' );
-        $logger->storeExtraInfo( );
-        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
-        $logger->store( );
+        if( $logger::$_storeObjectInDB ) {
+            $logger->storeExtraInfo( );
+            $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+            $logger->store( );
+        }
     }
 }
 
@@ -51,18 +55,22 @@ function OWScriptLoggerExceptionHandler( Exception $e ) {
         return FALSE;
     }
     $logger->logError( $e->getMessage( ) . PHP_EOL . $e->getTraceAsString( ), 'exception' );
-    $logger->storeExtraInfo( );
-    $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
-    $logger->store( );
+    if( $logger::$_storeObjectInDB ) {
+        $logger->storeExtraInfo( );
+        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+        $logger->store( );
+    }
 }
 
 function OWScriptLoggerCleanupHandler( ) {
     $db = eZDB::instance( );
     if( $db->errorNumber( ) > 0 ) {
         $logger->logError( 'A DB transaction error occurred : #' . $db->errorNumber( ) . ' - "' . $db->errorMessage( ) . '"', 'fatal_error' );
-        $logger->storeExtraInfo( );
-        $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
-        $logger->store( );
+        if( $logger::$_storeObjectInDB ) {
+            $logger->storeExtraInfo( );
+            $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
+            $logger->store( );
+        }
     }
 }
 
@@ -79,7 +87,10 @@ class OWScriptLogger extends eZPersistentObject {
     protected $_errorLogFile = 'owscriptlogger-error.log';
     protected $_warningLogFile = 'owscriptlogger-warning.log';
     protected $_noticeLogFile = 'owscriptlogger-notice.log';
+    protected $_allowedDatabaseDebugLevel = self::NOTICELOG;
+
     protected static $_timer;
+    public static $_storeObjectInDB = FALSE;
 
     protected static $cli;
 
@@ -95,7 +106,6 @@ class OWScriptLogger extends eZPersistentObject {
         $logIdentifier = strtolower( preg_replace( '/([A-Z])/', '_$1', $logIdentifier ) );
         $logIdentifier = $trans->transformByGroup( $logIdentifier, 'identifier' );
         $logger = new OWScriptLogger( $logIdentifier );
-        $logger->store( );
         eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
         eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
         set_exception_handler( 'OWScriptLoggerExceptionHandler' );
@@ -104,7 +114,16 @@ class OWScriptLogger extends eZPersistentObject {
         OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
     }
 
+    public function setAllowedDatabaseDebugLevel( $level ) {
+        try {
+            $logger = self::instance( );
+            $logger->_allowedDatabaseDebugLevel = $level;
+        } catch( Exception $e ) {
+        }
+    }
+
     public static function logMessage( $msg, $action = 'undefined', $bPrintMsg = true, $logType = self::NOTICELOG ) {
+        $storeInDatabase = FALSE;
         try {
             $logger = self::instance( );
         } catch( Exception $e ) {
@@ -114,28 +133,50 @@ class OWScriptLogger extends eZPersistentObject {
         $action = $trans->transformByGroup( $action, 'identifier' );
         switch( $logType ) {
             case self::ERRORLOG :
-                $logFile = isset( $logger ) ? $logger->_errorLogFile : 'owscriptlogger-error.log';
+                if( isset( $logger ) ) {
+                    if( $logger->_allowedDatabaseDebugLevel == self::NOTICELOG || $logger->_allowedDatabaseDebugLevel == self::WARNINGLOG || $logger->_allowedDatabaseDebugLevel == self::ERRORLOG ) {
+                        $storeInDatabase = TRUE;
+                    }
+                    $logFile = $logger->_errorLogFile;
+                } else {
+                    $logFile = 'owscriptlogger-error.log';
+                }
                 if( $bPrintMsg ) {
                     self::writeError( $msg, $action );
                 }
                 break;
 
             case self::WARNINGLOG :
-                $logFile = isset( $logger ) ? $logger->_warningLogFile : 'owscriptlogger-warning.log';
+                if( isset( $logger ) ) {
+                    if( $logger->_allowedDatabaseDebugLevel == self::NOTICELOG || $logger->_allowedDatabaseDebugLevel == self::WARNINGLOG ) {
+                        $storeInDatabase = TRUE;
+                    }
+                    $logFile = $logger->_warningLogFile;
+                } else {
+                    $logFile = 'owscriptlogger-warning.log';
+                }
                 if( $bPrintMsg ) {
                     self::writeWarning( $msg, $action );
                 }
                 break;
 
             case self::NOTICELOG :
-            default :
-                $logFile = isset( $logger ) ? $logger->_noticeLogFile : 'owscriptlogger-notice.log';
+                if( isset( $logger ) ) {
+                    if( $logger->_allowedDatabaseDebugLevel == self::NOTICELOG ) {
+                        $storeInDatabase = TRUE;
+                    }
+                    $logFile = $logger->_noticeLogFile;
+                } else {
+                    $logFile = 'owscriptlogger-notice.log';
+                }
                 if( $bPrintMsg ) {
                     self::writeNotice( $msg, $action );
                 }
                 break;
         }
-        if( isset( $logger ) ) {
+        if( $storeInDatabase ) {
+            $logger->store( );
+            $logger::$_storeObjectInDB = TRUE;
             $row = array(
                 'owscriptlogger_id' => $logger->attribute( 'id' ),
                 'date' => date( 'Y-m-d H:i:s' ),
@@ -145,8 +186,9 @@ class OWScriptLogger extends eZPersistentObject {
             );
             OWScriptLogger_Log::create( $row );
         }
-
-        eZLog::write( $msg, $logFile );
+        if( isset( $logFile ) ) {
+            eZLog::write( $msg, $logFile );
+        }
     }
 
     public static function logNotice( $msg, $action = 'undefined', $bPrintMsg = true ) {
@@ -324,19 +366,21 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public function storeExtraInfo( ) {
-        $this->setAttribute( 'notice_count', $this->countNotice( ) );
-        $this->setAttribute( 'warning_count', $this->countWarning( ) );
-        $this->setAttribute( 'error_count', $this->countError( ) );
-        $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
-        $this->setAttribute( 'memory_usage', memory_get_usage( ) );
-        OWScriptLogger::$_timer->stopTimer( $this->attribute( 'identifier' ) );
-        $timeData = OWScriptLogger::$_timer->getTimeData( );
-        $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
-        $this->store( );
+        if( $this::$_storeObjectInDB ) {
+            $this->setAttribute( 'notice_count', $this->countNotice( ) );
+            $this->setAttribute( 'warning_count', $this->countWarning( ) );
+            $this->setAttribute( 'error_count', $this->countError( ) );
+            $this->setAttribute( 'memory_usage_peak', memory_get_peak_usage( ) );
+            $this->setAttribute( 'memory_usage', memory_get_usage( ) );
+            OWScriptLogger::$_timer->stopTimer( $this->attribute( 'identifier' ) );
+            $timeData = OWScriptLogger::$_timer->getTimeData( );
+            $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
+            $this->store( );
+        }
     }
 
     public function __destruct( ) {
-        if( OWScriptLogger::$_timer instanceof ezcDebugTimer ) {
+        if( OWScriptLogger::$_timer instanceof ezcDebugTimer && $this::$_storeObjectInDB ) {
             $this->storeExtraInfo( );
             if( $this->attribute( 'status' ) == self::RUNNING_STATUS ) {
                 $this->setAttribute( 'status', self::FINISHED_STATUS );
