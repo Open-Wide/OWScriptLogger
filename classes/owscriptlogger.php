@@ -108,22 +108,20 @@ class OWScriptLogger extends eZPersistentObject {
         try {
             $logger = self::instance( );
         } catch( Exception $e ) {
-            self::writeError( $e->getMessage( ), 'log_message' );
-            return FALSE;
         }
         $trans = eZCharTransform::instance( );
         $action = strtolower( preg_replace( '/([A-Z])/', '_$1', $action ) );
         $action = $trans->transformByGroup( $action, 'identifier' );
         switch( $logType ) {
             case self::ERRORLOG :
-                $logFile = $logger->_errorLogFile;
+                $logFile = isset( $logger ) ? $logger->_errorLogFile : 'owscriptlogger-error.log';
                 if( $bPrintMsg ) {
                     self::writeError( $msg, $action );
                 }
                 break;
 
             case self::WARNINGLOG :
-                $logFile = $logger->_warningLogFile;
+                $logFile = isset( $logger ) ? $logger->_warningLogFile : 'owscriptlogger-warning.log';
                 if( $bPrintMsg ) {
                     self::writeWarning( $msg, $action );
                 }
@@ -131,20 +129,22 @@ class OWScriptLogger extends eZPersistentObject {
 
             case self::NOTICELOG :
             default :
-                $logFile = $logger->_noticeLogFile;
+                $logFile = isset( $logger ) ? $logger->_noticeLogFile : 'owscriptlogger-notice.log';
                 if( $bPrintMsg ) {
                     self::writeNotice( $msg, $action );
                 }
                 break;
         }
-        $row = array(
-            'owscriptlogger_id' => $logger->attribute( 'id' ),
-            'date' => date( 'Y-m-d H:i:s' ),
-            'level' => $logType,
-            'action' => $action,
-            'message' => $msg
-        );
-        OWScriptLogger_Log::create( $row );
+        if( isset( $logger ) ) {
+            $row = array(
+                'owscriptlogger_id' => $logger->attribute( 'id' ),
+                'date' => date( 'Y-m-d H:i:s' ),
+                'level' => $logType,
+                'action' => $action,
+                'message' => $msg
+            );
+            OWScriptLogger_Log::create( $row );
+        }
 
         eZLog::write( $msg, $logFile );
     }
