@@ -6,7 +6,7 @@ if( $isPcntl ) {
     function OWScriptLoggerSignalHandler( $signal ) {
         try {
             $logger = OWScriptLogger::instance( );
-        } catch( Exceoption $e ) {
+        } catch( Exception $e ) {
             return FALSE;
         }
         switch( $signal ) {
@@ -107,7 +107,7 @@ class OWScriptLogger extends eZPersistentObject {
     public static function logMessage( $msg, $action = 'undefined', $bPrintMsg = true, $logType = self::NOTICELOG ) {
         try {
             $logger = self::instance( );
-        } catch( Exceoption $e ) {
+        } catch( Exception $e ) {
             self::writeError( $e->getMessage( ), 'log_message' );
             return FALSE;
         }
@@ -165,7 +165,7 @@ class OWScriptLogger extends eZPersistentObject {
         try {
             $logger = self::instance( );
             $label = $logger->attribute( 'identifier' );
-        } catch( Exceoption $e ) {
+        } catch( Exception $e ) {
             $label = 'OWScriptLogger';
         }
         self::$cli = eZCLI::instance( );
