@@ -65,6 +65,11 @@ function OWScriptLoggerExceptionHandler( Exception $e ) {
 function OWScriptLoggerCleanupHandler( ) {
     $db = eZDB::instance( );
     if( $db->errorNumber( ) > 0 ) {
+        try {
+            $logger = OWScriptLogger::instance( );
+        } catch( Exception $e ) {
+            return FALSE;
+        }
         $logger->logError( 'A DB transaction error occurred : #' . $db->errorNumber( ) . ' - "' . $db->errorMessage( ) . '"', 'fatal_error' );
         if( $logger::$_storeObjectInDB ) {
             $logger->storeExtraInfo( );
