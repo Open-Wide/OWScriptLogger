@@ -13,7 +13,7 @@ if( $isPcntl ) {
             case SIGTERM :
             case SIGINT :
                 $logger->logNotice( 'Process stoped', 'signal' );
-                if( $logger::$_storeObjectInDB ) {
+                if( OWScriptLogger::$_storeObjectInDB ) {
                     $logger->storeExtraInfo( );
                     $logger->setAttribute( 'status', OWScriptLogger::STOPED_STATUS );
                     $logger->store( );
@@ -40,7 +40,7 @@ function OWScriptLoggerFatalError( ) {
             $message = "Unknown error";
         }
         $logger->logError( $message, 'fatal_error' );
-        if( $logger::$_storeObjectInDB ) {
+        if( OWScriptLogger::$_storeObjectInDB ) {
             $logger->storeExtraInfo( );
             $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
             $logger->store( );
@@ -55,7 +55,7 @@ function OWScriptLoggerExceptionHandler( Exception $e ) {
         return FALSE;
     }
     $logger->logError( $e->getMessage( ) . PHP_EOL . $e->getTraceAsString( ), 'exception' );
-    if( $logger::$_storeObjectInDB ) {
+    if( OWScriptLogger::$_storeObjectInDB ) {
         $logger->storeExtraInfo( );
         $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
         $logger->store( );
@@ -71,7 +71,7 @@ function OWScriptLoggerCleanupHandler( ) {
             return FALSE;
         }
         $logger->logError( 'A DB transaction error occurred : #' . $db->errorNumber( ) . ' - "' . $db->errorMessage( ) . '"', 'fatal_error' );
-        if( $logger::$_storeObjectInDB ) {
+        if( OWScriptLogger::$_storeObjectInDB ) {
             $logger->storeExtraInfo( );
             $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
             $logger->store( );
@@ -181,7 +181,7 @@ class OWScriptLogger extends eZPersistentObject {
         }
         if( $storeInDatabase ) {
             $logger->store( );
-            $logger::$_storeObjectInDB = TRUE;
+            OWScriptLogger::$_storeObjectInDB = TRUE;
             $row = array(
                 'owscriptlogger_id' => $logger->attribute( 'id' ),
                 'date' => date( 'Y-m-d H:i:s' ),
@@ -371,7 +371,7 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public function storeExtraInfo( ) {
-        if( $this::$_storeObjectInDB ) {
+        if( OWScriptLogger::$_storeObjectInDB ) {
             $this->setAttribute( 'notice_count', $this->countNotice( ) );
             $this->setAttribute( 'warning_count', $this->countWarning( ) );
             $this->setAttribute( 'error_count', $this->countError( ) );
@@ -385,7 +385,7 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public function __destruct( ) {
-        if( OWScriptLogger::$_timer instanceof ezcDebugTimer && $this::$_storeObjectInDB ) {
+        if( OWScriptLogger::$_timer instanceof ezcDebugTimer && OWScriptLogger::$_storeObjectInDB ) {
             $this->storeExtraInfo( );
             if( $this->attribute( 'status' ) == self::RUNNING_STATUS ) {
                 $this->setAttribute( 'status', self::FINISHED_STATUS );
