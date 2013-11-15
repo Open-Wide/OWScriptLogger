@@ -14,6 +14,12 @@ $schema = array(
                 'not_null' => TRUE,
                 'default' => FALSE,
             ),
+            'owscriptlogger_script_id' => array(
+                'length' => 11,
+                'type' => 'int',
+                'not_null' => TRUE,
+                'default' => 0,
+            ),
             'date' => array(
                 'type' => 'datetime',
                 'not_null' => TRUE,
@@ -58,7 +64,7 @@ $schema = array(
         'indexes' => array( 'PRIMARY' => array(
                 'type' => 'primary',
                 'fields' => array( 0 => 'id', ),
-            ), ),
+            ) )
     ),
     'owscriptlogger_log' => array(
         'name' => 'owscriptlogger_log',
@@ -92,7 +98,26 @@ $schema = array(
                 'default' => FALSE,
             ),
         ),
-        'indexes' => array(  ),
+        'indexes' => array( ),
+    ),
+    'owscriptlogger_script' => array(
+        'name' => 'owscriptlogger_script',
+        'fields' => array(
+            'id' => array(
+                'type' => 'auto_increment',
+                'default' => FALSE,
+            ),
+            'identifier' => array(
+                'length' => 100,
+                'type' => 'varchar',
+                'not_null' => TRUE,
+                'default' => FALSE,
+            ),
+        ),
+        'indexes' => array( 'PRIMARY' => array(
+                'type' => 'primary',
+                'fields' => array( 0 => 'id', ),
+            ) )
     ),
     '_info' => array( 'format' => 'generic', ),
 );

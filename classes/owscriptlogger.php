@@ -268,8 +268,14 @@ class OWScriptLogger extends eZPersistentObject {
                     'datatype' => 'integer',
                 ),
                 'identifier' => array(
-                    'name' => 'identifier',
+                    'name' => 'old_identifier',
                     'datatype' => 'string',
+                    'default' => null,
+                    'required' => true
+                ),
+                'owscriptlogger_script_id' => array(
+                    'name' => 'owscriptlogger_script_id',
+                    'datatype' => 'integer',
                     'default' => null,
                     'required' => true
                 ),
@@ -333,7 +339,9 @@ class OWScriptLogger extends eZPersistentObject {
             'name' => 'owscriptlogger',
             'function_attributes' => array(
                 'logs' => 'getLogs',
-                'actions' => 'getActions'
+                'actions' => 'getActions',
+                'identifier' => 'getIdentifier',
+                'script' => 'getScript'
             ),
             'set_functions' => array( )
         );
@@ -342,6 +350,7 @@ class OWScriptLogger extends eZPersistentObject {
     public function __construct( $identifier_or_row ) {
         $row = array(
             'id' => NULL,
+            'owscriptlogger_script_id' => 0,
             'date' => date( 'Y-m-d H:i:s' ),
             'runtime' => NULL,
             'memory_usage' => NULL,
@@ -350,23 +359,28 @@ class OWScriptLogger extends eZPersistentObject {
         if( is_array( $identifier_or_row ) ) {
             $row = array_merge( $row, $identifier_or_row );
         } else {
-            $trans = eZCharTransform::instance( );
-            $identifier_or_row = $trans->transformByGroup( $identifier_or_row, 'identifier' );
             $row['identifier'] = $identifier_or_row;
         }
-        parent::__construct( $row );
-        $identifier = $this->attribute( 'identifier' );
-        if( empty( $identifier ) ) {
-            throw new OWScriptLoggerException( __METHOD__ . " : Script logger identifier must be set" );
-        } else {
-            $trans = eZCharTransform::instance( );
-            $newIdentifier = $trans->transformByGroup( $identifier, 'identifier' );
-            if( $newIdentifier != $identifier ) {
-                $this->setAttribute( 'identifier', $newIdentifier );
+        if( isset( $row['identifier'] ) ) {
+            $saveRow = FALSE;
+            $identifier = $row['identifier'];
+            unset( $row['identifier'] );
+            if( $row['owscriptlogger_script_id'] == 0 ) {
+                $trans = eZCharTransform::instance( );
+                $identifier = $trans->transformByGroup( $identifier, 'identifier' );
+                $script = OWScriptLogger_Script::findOrCreate( $identifier );
+                $row['owscriptlogger_script_id'] = $script->attribute( 'id' );
+                $saveRow = TRUE;
+            }
+            parent::__construct( $row );
+            if( $saveRow ) {
+                $this->store();
             }
             $this->_errorLogFile = $identifier . '-error.log';
             $this->_warningLogFile = $identifier . '-warning.log';
             $this->_noticeLogFile = $identifier . '-notice.log';
+        } else {
+            throw new OWScriptLoggerException( __METHOD__ . " : Script logger identifier must be set" );
         }
     }
 
@@ -400,6 +414,22 @@ class OWScriptLogger extends eZPersistentObject {
 
     public function getActions( ) {
         return OWScriptLogger_Log::fetchActionList( array( 'owscriptlogger_id' => $this->attribute( 'id' ) ) );
+    }
+
+    public function getIdentifier( ) {
+        $scriptID = $this->attribute( 'owscriptlogger_script_id' );
+        if( empty( $scriptID ) ) {
+            $script = OWScriptLogger_Script::findOrCreate( $this->attribute( 'old_identifier' ) );
+            $this->setAttribute( 'owscriptlogger_script_id', $script->attribute( 'id' ) );
+            $this->store( );
+        } else {
+            $script = $this->attribute( 'script' );
+        }
+        return $script->attribute( 'identifier' );
+    }
+
+    public function getScript( ) {
+        return OWScriptLogger_Script::fetch( $this->attribute( 'owscriptlogger_script_id' ) );
     }
 
     public function countNotice( ) {
