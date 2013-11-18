@@ -44,7 +44,7 @@
                 <div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-tc"><div class="box-bl"><div class="box-br"><div class="block">
                     <div class="controlbar">
                         <div class="block">
-                            <input class="defaultbutton" type="submit" name="Configure" value="{'Configure'|i18n( 'owscriptlogger/all' )}" />
+                            <input class="defaultbutton" type="submit" name="Configure" value="{'Store'|i18n( 'owscriptlogger/all' )}" />
                         </div>
                     </div>
                 </div></div></div></div></div></div>

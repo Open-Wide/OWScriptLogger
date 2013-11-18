@@ -28,8 +28,8 @@
         <translation>Supprimer</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation>Configurer</translation>
+        <source>Store</source>
+        <translation>Enregistrer</translation>
     </message>
 </context>
 <context>
@@ -134,12 +134,20 @@
         <translation>Scripts</translation>
     </message>
     <message>
+        <source>Configure</source>
+        <translation>Configurer</translation>
+    </message>
+    <message>
         <source>Identifier</source>
         <translation>Identifiant</translation>
     </message>
     <message>
         <source>No data</source>
         <translation>Aucune donnée</translation>
+    </message>
+    <message>
+        <source>Database log level</source>
+        <translation>Niveau de log mini à insérer dans la base de données</translation>
     </message>
 </context>
 </TS>
