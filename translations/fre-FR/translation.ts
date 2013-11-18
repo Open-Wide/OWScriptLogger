@@ -157,6 +157,22 @@
         <source>One recipient per line</source>
         <translation>Un destinataire par ligne</translation>
     </message>
+    <message>
+        <source>Error max age</source>
+        <translation>Durée de vie des logs de script en erreur</translation>
+    </message>
+    <message>
+        <source>Finished max age</source>
+        <translation>Durée de vie des logs de script terminés avec succès</translation>
+    </message>
+    <message>
+        <source>Manually stoped max age</source>
+        <translation>Durée de vie des logs de script stoppés manullement</translation>
+    </message>
+    <message>
+        <source>In days</source>
+        <translation>En jours</translation>
+    </message>
 </context>
 <context>
     <name>owscriptlogger/mail/fatal_error</name>
