@@ -24,7 +24,7 @@
                                                 {foreach $script_list as $script sequence array( 'yui-dt-even', 'yui-dt-odd' ) as $style}
                                                     <tr class="{if $index|eq(0)}yui-dt-first{/if} {$style} identifier_{$script.identifier} status_{$script.status}">
                                                         <td class="script_identifier"><div class="yui-dt-liner">{$script.identifier}</div></td>
-                                                        <td class="script_config"><a href={concat('owscriptlogger/scripts/', $script.identifier)|ezurl()}>{'Configure'|i18n('owscriptlogger/scripts' )}</a></td>
+                                                        <td class="script_config"><a href={concat('owscriptlogger/scripts/', $script.identifier)|ezurl()}>{'Configure'|i18n('owscriptlogger/all' )}</a></td>
                                                     </tr>
                                                 {/foreach}
                                             </tbody>

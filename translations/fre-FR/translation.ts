@@ -27,6 +27,10 @@
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
+    <message>
+        <source>Configure</source>
+        <translation>Configurer</translation>
+    </message>
 </context>
 <context>
     <name>owscriptlogger/logs</name>
@@ -132,10 +136,6 @@
     <message>
         <source>Identifier</source>
         <translation>Identifiant</translation>
-    </message>
-    <message>
-        <source>Configure</source>
-        <translation>Configurer</translation>
     </message>
     <message>
         <source>No data</source>

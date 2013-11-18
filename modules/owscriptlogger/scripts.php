@@ -7,13 +7,20 @@ $tpl = templateInit( );
 $ScriptIdentifier = $Params['ScriptIdentifier'];
 
 if( is_null( $ScriptIdentifier ) ) {
-    if( $Module->isCurrentAction( 'Configure' ) && $Module->hasActionParameter( 'ParametersArray' ) ) {
-        // store script configuration
-    }
     $tpl->setVariable( 'script_list', OWScriptLogger_Script::fetchList( ) );
     $Result['content'] = $tpl->fetch( 'design:owscriptlogger/scripts.tpl' );
 } else {
-    $tpl->setVariable( 'script', OWScriptLogger_Script::fetch( $ScriptIdentifier ) );
+    $script = OWScriptLogger_Script::fetch( $ScriptIdentifier );
+    if( $Module->isCurrentAction( 'Configure' ) && $Module->hasActionParameter( 'ParametersArray' ) ) {
+        $parametersArray = $Module->actionParameter( 'ParametersArray' );
+        foreach( $parametersArray as $paramIdentifier => $paramValue ) {
+            if( $script->hasAttribute( $paramIdentifier ) ) {
+                $script->setAttribute( $paramIdentifier, $paramValue );
+            }
+        }
+        $script->store( );
+    }
+    $tpl->setVariable( 'script', $script );
     $Result['content'] = $tpl->fetch( 'design:owscriptlogger/script_details.tpl' );
 }
 
