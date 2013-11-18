@@ -149,5 +149,24 @@
         <source>Database log level</source>
         <translation>Niveau de log mini à insérer dans la base de données</translation>
     </message>
+    <message>
+        <source>Alert recipients</source>
+        <translation>Destinataires des alertes</translation>
+    </message>
+    <message>
+        <source>One recipient per line</source>
+        <translation>Un destinataire par ligne</translation>
+    </message>
+</context>
+<context>
+    <name>owscriptlogger/mail/fatal_error</name>
+    <message>
+        <source>Fatal error from script %1</source>
+        <translation>Erreur fatale du script %1</translation>
+    </message>
+    <message>
+        <source>The following error occurred when running the script %1</source>
+        <translation>L'erreur suivante s'est produite lors de l'exécution du script %1</translation>
+    </message>
 </context>
 </TS>

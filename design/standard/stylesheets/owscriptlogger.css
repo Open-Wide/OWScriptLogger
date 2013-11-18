@@ -23,6 +23,23 @@ table.list td.logger_runtime, table.list td.logger_memory_usage, table.list td.l
     text-align: right;
 }
 
+table.list td.script_param_title {
+    font-weight: bold;
+    width: 20%;
+    white-space: nowrap;    
+}
+
+td.script_alert_recipients textarea {
+    width: 100%;
+    height: 100px
+}
+
+p.help {
+    font-weight: normal;
+    font-style: italic;
+    color: #333;
+}
+
 .yui-dt-even.level_notice {
     background-color: #FAFFF5;
 }

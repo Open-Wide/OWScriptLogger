@@ -20,6 +20,12 @@ class OWScriptLogger_Script extends eZPersistentObject {
                     'datatype' => 'string',
                     'default' => 'notice',
                     'required' => true
+                ),
+                'fatal_error_recipients' => array(
+                    'name' => 'fatal_error_recipients',
+                    'datatype' => 'text',
+                    'default' => null,
+                    'required' => false
                 )
             ),
             'increment_key' => 'id',

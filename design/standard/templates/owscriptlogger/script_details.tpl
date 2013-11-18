@@ -1,4 +1,5 @@
-<div id="log_details">
+{ezcss_require( 'owscriptlogger.css' )}
+<div id="script_details">
     <div class="context-block">
         <div class="box-header">
             <div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
@@ -20,18 +21,27 @@
 	                            <table class="list log_list">
 	                                <tbody class="yui-dt-data">
                                         <tr class="yui-dt-first yui-dt-even">
-                                            <th class="script_identifier"><div class="yui-dt-liner">{'Identifier'|i18n('owscriptlogger/scripts' )}</div></td>
+                                            <td class="script_identifier script_param_title"><div class="yui-dt-liner">{'Identifier'|i18n('owscriptlogger/scripts' )}</div></td>
                                             <td class="script_identifier"><div class="yui-dt-liner">{$script.identifier}</div></td>
                                         </tr>
                                         <tr class="yui-dt-first yui-dt-odd">
-                                            <th class="script_identifier"><div class="yui-dt-liner">{'Database log level'|i18n('owscriptlogger/scripts' )}</div></td>
-                                            <td class="script_identifier"><div class="yui-dt-liner">
+                                            <td class="script_database_log_level script_param_title"><div class="yui-dt-liner">{'Database log level'|i18n('owscriptlogger/scripts' )}</div></td>
+                                            <td class="script_database_log_level"><div class="yui-dt-liner">
                                                 <select name="ParametersArray[database_log_level]">
                                                     <option value="notice" {if $script.database_log_level|eq('notice')}selected="selected"{/if}>{'Notice'|i18n('owscriptlogger/scripts' )}</option>
                                                     <option value="warning" {if $script.database_log_level|eq('warning')}selected="selected"{/if}>{'Warning'|i18n('owscriptlogger/scripts' )}</option>
                                                     <option value="error" {if $script.database_log_level|eq('error')}selected="selected"{/if}>{'Error'|i18n('owscriptlogger/scripts' )}</option>
                                                     <option value="disabled" {if $script.database_log_level|eq('disabled')}selected="selected"{/if}>{'Disabled'|i18n('owscriptlogger/scripts' )}</option>
                                             </div></td>
+                                        <tr class="yui-dt-first yui-dt-even">
+                                            <td class="script_fatal_error_recipients script_param_title"><div class="yui-dt-liner">
+                                                {'Alert recipients'|i18n('owscriptlogger/scripts' )} 
+                                                <p class="help">{'One recipient per line'|i18n('owscriptlogger/scripts' )}</p>
+                                            </div></td>
+                                            <td class="script_fatal_error_recipients"><div class="yui-dt-liner">
+                                                <textarea name="ParametersArray[fatal_error_recipients]">{$script.fatal_error_recipients}</textarea>
+                                            </div></td>
+                                        </tr>
                                         </tr>
 	                                </tbody>
 	                            </table>

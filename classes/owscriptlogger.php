@@ -40,6 +40,7 @@ function OWScriptLoggerFatalError( ) {
             $message = "Unknown error";
         }
         $logger->logError( $message, 'fatal_error' );
+        $logger->sendFatalErrorMessage( $message );
         if( OWScriptLogger::$_storeObjectInDB ) {
             $logger->storeExtraInfo( );
             $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
@@ -70,7 +71,9 @@ function OWScriptLoggerCleanupHandler( ) {
         } catch( Exception $e ) {
             return FALSE;
         }
-        $logger->logError( 'A DB transaction error occurred : #' . $db->errorNumber( ) . ' - "' . $db->errorMessage( ) . '"', 'fatal_error' );
+        $message = 'A DB transaction error occurred : #' . $db->errorNumber( ) . ' - "' . $db->errorMessage( ) . '"';
+        $logger->logError( $message, 'fatal_error' );
+        $logger->sendFatalErrorMessage( $message );
         if( OWScriptLogger::$_storeObjectInDB ) {
             $logger->storeExtraInfo( );
             $logger->setAttribute( 'status', OWScriptLogger::ERROR_STATUS );
@@ -121,7 +124,7 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public function setAllowedDatabaseDebugLevel( $level ) {
-        trigger_error("OWScriptLogger::setAllowedDatabaseDebugLevel() is deprecated. Use backend script configuration instead", E_USER_DEPRECATED);
+        trigger_error( "OWScriptLogger::setAllowedDatabaseDebugLevel() is deprecated. Use backend script configuration instead", E_USER_DEPRECATED );
         try {
             $logger = self::instance( );
             $logger->_allowedDatabaseDebugLevel = $level;
@@ -451,6 +454,56 @@ class OWScriptLogger extends eZPersistentObject {
             'owscriptlogger_id' => $this->attribute( 'id' ),
             'level' => $level
         ) );
+    }
+
+    public function sendFatalErrorMessage( $msg ) {
+        $recipients = $this->attribute( 'script' )->attribute( 'fatal_error_recipients' );
+
+        $recipients = explode( PHP_EOL, $recipients );
+        if( !empty( $recipients ) ) {
+            include_once ('kernel/common/template.php');
+            $tpl = templateInit( );
+            $tpl->setVariable( 'message', $msg );
+            $tpl->setVariable( 'script_identifier', $this->attribute( 'identifier' ) );
+            $templateResult = $tpl->fetch( 'design:owscriptlogger/mail/fatal_error.tpl' );
+
+            $subject = $tpl->variable( 'subject' );
+
+            $ini = eZINI::instance( );
+            $mail = new eZMail( );
+
+            if( $tpl->hasVariable( 'content_type' ) )
+                $mail->setContentType( $tpl->variable( 'content_type' ) );
+
+            $receiver = trim( array_shift( $recipients ) );
+            if( !$mail->validate( $receiver ) ) {
+                $receiver = $ini->variable( "MailSettings", "AdminEmail" );
+            }
+            $mail->setReceiver( $receiver );
+
+            $ccReceivers = $recipients;
+            if( !empty( $ccReceivers ) ) {
+                if( !is_array( $ccReceivers ) )
+                    $ccReceivers = array( $ccReceivers );
+                foreach( $ccReceivers as $ccReceiver ) {
+                    if( $mail->validate( $ccReceiver ) )
+                        $mail->addCc( $ccReceiver );
+                }
+            }
+
+            $sender = $ini->variable( "MailSettings", "EmailSender" );
+            $mail->setSender( $sender );
+
+            $replyTo = $ini->variable( "MailSettings", "EmailReplyTo" );
+            if( !$mail->validate( $replyTo ) ) {
+                $replyTo = $sender;
+            }
+            $mail->setReplyTo( $replyTo );
+
+            $mail->setSubject( $subject );
+            $mail->setBody( $templateResult );
+            $mailResult = eZMailTransport::send( $mail );
+        }
     }
 
     static function fetchList( $conds = array(), $limit = NULL ) {

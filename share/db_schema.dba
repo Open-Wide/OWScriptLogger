@@ -119,6 +119,11 @@ $schema = array(
                 'not_null' => TRUE,
                 'default' => 'notive',
             ),
+            'fatal_error_recipients' => array(
+                'type' => 'text',
+                'not_null' => FALSE,
+                'default' => NULL,
+            ),
         ),
         'indexes' => array( 'PRIMARY' => array(
                 'type' => 'primary',
