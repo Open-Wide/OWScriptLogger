@@ -1,8 +1,12 @@
 <?php
 
 $Module = $Params["Module"];
-include_once ('kernel/common/template.php');
-$tpl = templateInit( );
+if( is_callable( 'eZTemplate::factory' ) ) {
+    $tpl = eZTemplate::factory( );
+} else {
+    include_once ('kernel/common/template.php');
+    $tpl = templateInit( );
+}
 
 $LoggerID = $Params['LoggerID'];
 

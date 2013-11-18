@@ -461,8 +461,12 @@ class OWScriptLogger extends eZPersistentObject {
 
         $recipients = explode( PHP_EOL, $recipients );
         if( !empty( $recipients ) ) {
-            include_once ('kernel/common/template.php');
-            $tpl = templateInit( );
+            if( is_callable( 'eZTemplate::factory' ) ) {
+                $tpl = eZTemplate::factory( );
+            } else {
+                include_once ('kernel/common/template.php');
+                $tpl = templateInit( );
+            }
             $tpl->setVariable( 'message', $msg );
             $tpl->setVariable( 'script_identifier', $this->attribute( 'identifier' ) );
             $templateResult = $tpl->fetch( 'design:owscriptlogger/mail/fatal_error.tpl' );
@@ -588,7 +592,7 @@ class OWScriptLogger extends eZPersistentObject {
         );
 
         $custom_tables = array( "owscriptlogger_script" );
-        
+
         $custom_conds = " WHERE owscriptlogger.owscriptlogger_script_id = owscriptlogger_script.id ";
         $custom_conds .= " AND (";
         $custom_conds .= "( owscriptlogger_script.max_age_finished != 0 AND owscriptlogger.date < DATE_SUB(NOW(),INTERVAL owscriptlogger_script.max_age_finished DAY) AND owscriptlogger.status = 'finished' ) ";
@@ -597,7 +601,7 @@ class OWScriptLogger extends eZPersistentObject {
         $custom_conds .= " OR ";
         $custom_conds .= "( owscriptlogger_script.max_age_manually_stoped != 0 AND owscriptlogger.date < DATE_SUB(NOW(),INTERVAL owscriptlogger_script.max_age_manually_stoped DAY) AND owscriptlogger.status = 'manually_stoped' ) ";
         $custom_conds .= ")";
-        
+
         foreach( self::fetchObjectList( self::definition( ), array( ), null, null, null, true, false, $custom_fields, $custom_tables, $custom_conds ) as $object ) {
             $object->remove( );
         }
