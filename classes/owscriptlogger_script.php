@@ -26,7 +26,19 @@ class OWScriptLogger_Script extends eZPersistentObject {
                     'datatype' => 'text',
                     'default' => null,
                     'required' => false
-                )
+                ),
+                'max_age_error' => array(
+                    'name' => 'max_age_error',
+                    'datatype' => 'integer',
+                ),
+                'max_age_finished' => array(
+                    'name' => 'max_age_finished',
+                    'datatype' => 'integer',
+                ),
+                'max_age_manually_stoped' => array(
+                    'name' => 'max_age_manually_stoped',
+                    'datatype' => 'integer',
+                ),
             ),
             'increment_key' => 'id',
             'keys' => array( 'identifier' ),

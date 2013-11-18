@@ -124,6 +124,21 @@ $schema = array(
                 'not_null' => FALSE,
                 'default' => NULL,
             ),
+            'max_age_error' => array(
+                'type' => 'int',
+                'size' => 11,
+                'default' => 0,
+            ),
+            'max_age_finished' => array(
+                'type' => 'int',
+                'size' => 11,
+                'default' => 0,
+            ),
+            'max_age_manually_stoped' => array(
+                'type' => 'int',
+                'size' => 11,
+                'default' => 0,
+            ),
         ),
         'indexes' => array( 'PRIMARY' => array(
                 'type' => 'primary',

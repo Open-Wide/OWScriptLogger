@@ -24,7 +24,7 @@
                                             <td class="script_identifier script_param_title"><div class="yui-dt-liner">{'Identifier'|i18n('owscriptlogger/scripts' )}</div></td>
                                             <td class="script_identifier"><div class="yui-dt-liner">{$script.identifier}</div></td>
                                         </tr>
-                                        <tr class="yui-dt-first yui-dt-odd">
+                                        <tr class="yui-dt-odd">
                                             <td class="script_database_log_level script_param_title"><div class="yui-dt-liner">{'Database log level'|i18n('owscriptlogger/scripts' )}</div></td>
                                             <td class="script_database_log_level"><div class="yui-dt-liner">
                                                 <select name="ParametersArray[database_log_level]">
@@ -33,7 +33,8 @@
                                                     <option value="error" {if $script.database_log_level|eq('error')}selected="selected"{/if}>{'Error'|i18n('owscriptlogger/scripts' )}</option>
                                                     <option value="disabled" {if $script.database_log_level|eq('disabled')}selected="selected"{/if}>{'Disabled'|i18n('owscriptlogger/scripts' )}</option>
                                             </div></td>
-                                        <tr class="yui-dt-first yui-dt-even">
+                                        </tr>
+                                        <tr class="yui-dt-even">
                                             <td class="script_fatal_error_recipients script_param_title"><div class="yui-dt-liner">
                                                 {'Alert recipients'|i18n('owscriptlogger/scripts' )} 
                                                 <p class="help">{'One recipient per line'|i18n('owscriptlogger/scripts' )}</p>
@@ -42,6 +43,32 @@
                                                 <textarea name="ParametersArray[fatal_error_recipients]">{$script.fatal_error_recipients}</textarea>
                                             </div></td>
                                         </tr>
+                                        <tr class="yui-dt-odd">
+                                            <td class="script_max_age_error script_param_title"><div class="yui-dt-liner">
+                                                {'Error max age'|i18n('owscriptlogger/scripts' )} 
+                                                <p class="help">{'In days'|i18n('owscriptlogger/scripts' )}</p>
+                                            </div></td>
+                                            <td class="script_max_age_error"><div class="yui-dt-liner">
+                                                <input type="text" name="ParametersArray[max_age_error]" value="{$script.max_age_error}" />
+                                            </div></td>
+                                        </tr>
+                                        <tr class="yui-dt-even">
+                                            <td class="script_max_age_finished script_param_title"><div class="yui-dt-liner">
+                                                {'Finished max age'|i18n('owscriptlogger/scripts' )} 
+                                                <p class="help">{'In days'|i18n('owscriptlogger/scripts' )}</p>
+                                            </div></td>
+                                            <td class="script_max_age_finished"><div class="yui-dt-liner">
+                                                <input type="text" name="ParametersArray[max_age_finished]" value="{$script.max_age_finished}" />
+                                            </div></td>
+                                        </tr>
+                                        <tr class="yui-dt-odd">
+                                            <td class="script_max_age_manually_stoped script_param_title"><div class="yui-dt-liner">
+                                                {'Manually stoped max age'|i18n('owscriptlogger/scripts' )} 
+                                                <p class="help">{'In days'|i18n('owscriptlogger/scripts' )}</p>
+                                            </div></td>
+                                            <td class="script_max_age_manually_stoped"><div class="yui-dt-liner">
+                                                <input type="text" name="ParametersArray[max_age_manually_stoped]" value="{$script.max_age_manually_stoped}" />
+                                            </div></td>
                                         </tr>
 	                                </tbody>
 	                            </table>

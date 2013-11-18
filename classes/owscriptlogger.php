@@ -539,4 +539,68 @@ class OWScriptLogger extends eZPersistentObject {
         return self::removeObject( self::definition( ), $conds );
     }
 
+    static function cleanup( ) {
+        $custom_fields = array(
+            array(
+                'operation' => 'owscriptlogger.id',
+                'name' => 'id'
+            ),
+            array(
+                'operation' => 'owscriptlogger.identifier',
+                'name' => 'identifier'
+            ),
+            array(
+                'operation' => 'owscriptlogger.owscriptlogger_script_id',
+                'name' => 'owscriptlogger_script_id'
+            ),
+            array(
+                'operation' => 'owscriptlogger.date',
+                'name' => 'date'
+            ),
+            array(
+                'operation' => 'owscriptlogger.runtime',
+                'name' => 'runtime'
+            ),
+            array(
+                'operation' => 'owscriptlogger.memory_usage',
+                'name' => 'memory_usage'
+            ),
+            array(
+                'operation' => 'owscriptlogger.memory_usage_peak',
+                'name' => 'memory_usage_peak'
+            ),
+            array(
+                'operation' => 'owscriptlogger.notice_count',
+                'name' => 'notice_count'
+            ),
+            array(
+                'operation' => 'owscriptlogger.warning_count',
+                'name' => 'warning_count'
+            ),
+            array(
+                'operation' => 'owscriptlogger.error_count',
+                'name' => 'error_count'
+            ),
+            array(
+                'operation' => 'owscriptlogger.status',
+                'name' => 'status'
+            )
+        );
+
+        $custom_tables = array( "owscriptlogger_script" );
+        
+        $custom_conds = " WHERE owscriptlogger.owscriptlogger_script_id = owscriptlogger_script.id ";
+        $custom_conds .= " AND (";
+        $custom_conds .= "( owscriptlogger_script.max_age_finished != 0 AND owscriptlogger.date < DATE_SUB(NOW(),INTERVAL owscriptlogger_script.max_age_finished DAY) AND owscriptlogger.status = 'finished' ) ";
+        $custom_conds .= " OR ";
+        $custom_conds .= "( owscriptlogger_script.max_age_error != 0 AND owscriptlogger.date < DATE_SUB(NOW(),INTERVAL owscriptlogger_script.max_age_error DAY) AND owscriptlogger.status = 'error' ) ";
+        $custom_conds .= " OR ";
+        $custom_conds .= "( owscriptlogger_script.max_age_manually_stoped != 0 AND owscriptlogger.date < DATE_SUB(NOW(),INTERVAL owscriptlogger_script.max_age_manually_stoped DAY) AND owscriptlogger.status = 'manually_stoped' ) ";
+        $custom_conds .= ")";
+        
+        foreach( self::fetchObjectList( self::definition( ), array( ), null, null, null, true, false, $custom_fields, $custom_tables, $custom_conds ) as $object ) {
+            $object->remove( );
+        }
+    }
+
 }
