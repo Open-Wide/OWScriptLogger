@@ -7,7 +7,8 @@
 *}
 
 {include uri='design:parts/ini_menu.tpl' ini_section='Leftmenu_owscriptlogger' i18n_hash=hash(
-    'logs',              'Logs'|i18n( 'design/admin/parts/owscriptlogger/menu' )
+    'logs',              'Logs'|i18n( 'design/admin/parts/owscriptlogger/menu' ),
+    'scripts',              'Scripts'|i18n( 'design/admin/parts/owscriptlogger/menu' )
 )}
 
 {* Left menu width control. *}

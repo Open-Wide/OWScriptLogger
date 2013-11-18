@@ -17,8 +17,8 @@
         <translation>Logs</translation>
     </message>
     <message>
-        <source>Graphs</source>
-        <translation>Graphiques</translation>
+        <source>Scripts</source>
+        <translation>Scripts</translation>
     </message>
 </context>
 <context>
@@ -37,10 +37,6 @@
     <message>
         <source>Date</source>
         <translation>Date</translation>
-    </message>
-    <message>
-        <source>Graphs</source>
-        <translation>Graphiques</translation>
     </message>
     <message>
         <source>Identifier</source>
@@ -125,6 +121,25 @@
     <message>
         <source>manually_stoped</source>
         <translation>Stoppé manuellement</translation>
+    </message>
+</context>
+<context>
+    <name>owscriptlogger/scripts</name>
+    <message>
+        <source>Scripts</source>
+        <translation>Scripts</translation>
+    </message>
+    <message>
+        <source>Identifier</source>
+        <translation>Identifiant</translation>
+    </message>
+    <message>
+        <source>Configure</source>
+        <translation>Configurer</translation>
+    </message>
+    <message>
+        <source>No data</source>
+        <translation>Aucune donnée</translation>
     </message>
 </context>
 </TS>
