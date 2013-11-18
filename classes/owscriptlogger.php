@@ -111,6 +111,7 @@ class OWScriptLogger extends eZPersistentObject {
         $logIdentifier = strtolower( preg_replace( '/([A-Z])/', '_$1', $logIdentifier ) );
         $logIdentifier = $trans->transformByGroup( $logIdentifier, 'identifier' );
         $logger = new OWScriptLogger( $logIdentifier );
+        $logger->_allowedDatabaseDebugLevel = $logger->attribute( 'script' )->attribute( 'database_log_level' );
         eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
         eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
         set_exception_handler( 'OWScriptLoggerExceptionHandler' );
@@ -120,6 +121,7 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public function setAllowedDatabaseDebugLevel( $level ) {
+        trigger_error("OWScriptLogger::setAllowedDatabaseDebugLevel() is deprecated. Use backend script configuration instead", E_USER_DEPRECATED);
         try {
             $logger = self::instance( );
             $logger->_allowedDatabaseDebugLevel = $level;
@@ -374,7 +376,7 @@ class OWScriptLogger extends eZPersistentObject {
             }
             parent::__construct( $row );
             if( $saveRow ) {
-                $this->store();
+                $this->store( );
             }
             $this->_errorLogFile = $identifier . '-error.log';
             $this->_warningLogFile = $identifier . '-warning.log';
