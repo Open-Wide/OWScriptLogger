@@ -14,6 +14,12 @@ class OWScriptLogger_Script extends eZPersistentObject {
                     'datatype' => 'string',
                     'default' => null,
                     'required' => true
+                ),
+                'database_log_level' => array(
+                    'name' => 'database_log_level',
+                    'datatype' => 'string',
+                    'default' => 'notice',
+                    'required' => true
                 )
             ),
             'increment_key' => 'id',

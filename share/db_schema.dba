@@ -113,6 +113,12 @@ $schema = array(
                 'not_null' => TRUE,
                 'default' => FALSE,
             ),
+            'database_log_level' => array(
+                'length' => 10,
+                'type' => 'varchar',
+                'not_null' => TRUE,
+                'default' => 'notive',
+            ),
         ),
         'indexes' => array( 'PRIMARY' => array(
                 'type' => 'primary',
