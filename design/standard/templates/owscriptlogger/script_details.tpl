@@ -13,10 +13,6 @@
 	                <div class="context-toolbar"></div>
 	                <div class="context-attributes">
 	                    <div class="block">
-	                    </div>
-	                </div>
-	                <div class="context-attributes">
-	                    <div class="block">
 	                        <div class="yui-dt">
 	                            <table class="list log_list">
 	                                <tbody class="yui-dt-data">
@@ -28,10 +24,10 @@
                                             <td class="script_database_log_level script_param_title"><div class="yui-dt-liner">{'Database log level'|i18n('owscriptlogger/scripts' )}</div></td>
                                             <td class="script_database_log_level"><div class="yui-dt-liner">
                                                 <select name="ParametersArray[database_log_level]">
-                                                    <option value="notice" {if $script.database_log_level|eq('notice')}selected="selected"{/if}>{'Notice'|i18n('owscriptlogger/scripts' )}</option>
-                                                    <option value="warning" {if $script.database_log_level|eq('warning')}selected="selected"{/if}>{'Warning'|i18n('owscriptlogger/scripts' )}</option>
-                                                    <option value="error" {if $script.database_log_level|eq('error')}selected="selected"{/if}>{'Error'|i18n('owscriptlogger/scripts' )}</option>
-                                                    <option value="disabled" {if $script.database_log_level|eq('disabled')}selected="selected"{/if}>{'Disabled'|i18n('owscriptlogger/scripts' )}</option>
+                                                    <option value="notice" {if $script.database_log_level|eq('notice')}selected="selected"{/if}>{'Notice'|i18n('owscriptlogger/all' )}</option>
+                                                    <option value="warning" {if $script.database_log_level|eq('warning')}selected="selected"{/if}>{'Warning'|i18n('owscriptlogger/all' )}</option>
+                                                    <option value="error" {if $script.database_log_level|eq('error')}selected="selected"{/if}>{'Error'|i18n('owscriptlogger/all' )}</option>
+                                                    <option value="disabled" {if $script.database_log_level|eq('disabled')}selected="selected"{/if}>{'Disabled'|i18n('owscriptlogger/all' )}</option>
                                             </div></td>
                                         </tr>
                                         <tr class="yui-dt-even">

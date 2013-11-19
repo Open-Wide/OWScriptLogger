@@ -48,9 +48,9 @@
                                                     <th class="logger_view_log" rowspan="2"></th>
                                                 </tr>
                                                 <tr>
-                                                    <th class="logger_notice_count"><div class="yui-dt-liner">{'Notice'|i18n('owscriptlogger/logs' )}</div></th>
-                                                    <th class="logger_warning_count"><div class="yui-dt-liner">{'Warning'|i18n('owscriptlogger/logs' )}</div></th>
-                                                    <th class="logger_error_count"><div class="yui-dt-liner">{'Error'|i18n('owscriptlogger/logs' )}</div></th>
+                                                    <th class="logger_notice_count"><div class="yui-dt-liner">{'Notice'|i18n('owscriptlogger/all' )}</div></th>
+                                                    <th class="logger_warning_count"><div class="yui-dt-liner">{'Warning'|i18n('owscriptlogger/all' )}</div></th>
+                                                    <th class="logger_error_count"><div class="yui-dt-liner">{'Error'|i18n('owscriptlogger/all' )}</div></th>
                                                 </tr>
                                             </thead>
                                             <tbody class="yui-dt-data">

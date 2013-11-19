@@ -31,6 +31,22 @@
         <source>Store</source>
         <translation>Enregistrer</translation>
     </message>
+    <message>
+        <source>Notice</source>
+        <translation>Notice</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Warning</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Erreur</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <translation>Disabled</translation>
+    </message>
 </context>
 <context>
     <name>owscriptlogger/logs</name>
@@ -77,18 +93,6 @@
     <message>
         <source>Filters</source>
         <translation>Filtres</translation>
-    </message>
-    <message>
-        <source>Notice</source>
-        <translation>Notice</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>Warning</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Erreur</translation>
     </message>
     <message>
         <source>Actions</source>
