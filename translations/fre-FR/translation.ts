@@ -177,6 +177,14 @@
         <source>In days</source>
         <translation>En jours</translation>
     </message>
+    <message>
+        <source>No database log for actions</source>
+        <translation>Ne pas enregistrer les log des actions suivantes dans la base de données</translation>
+    </message>
+    <message>
+        <source>One action per line</source>
+        <translation>Une action par ligne</translation>
+    </message>
 </context>
 <context>
     <name>owscriptlogger/mail/fatal_error</name>

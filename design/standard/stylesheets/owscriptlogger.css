@@ -29,7 +29,7 @@ table.list td.script_param_title {
     white-space: nowrap;    
 }
 
-td.script_fatal_error_recipients textarea {
+#script_details td textarea {
     width: 100%;
     height: 100px
 }

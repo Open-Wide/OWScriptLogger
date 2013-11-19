@@ -139,6 +139,11 @@ $schema = array(
                 'size' => 11,
                 'default' => 0,
             ),
+            'no_db_log_actions' => array(
+                'type' => 'text',
+                'not_null' => FALSE,
+                'default' => NULL,
+            ),
         ),
         'indexes' => array( 'PRIMARY' => array(
                 'type' => 'primary',

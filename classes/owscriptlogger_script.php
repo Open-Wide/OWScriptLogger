@@ -39,6 +39,12 @@ class OWScriptLogger_Script extends eZPersistentObject {
                     'name' => 'max_age_manually_stoped',
                     'datatype' => 'integer',
                 ),
+                'no_db_log_actions' => array(
+                    'name' => 'no_db_log_actions',
+                    'datatype' => 'text',
+                    'default' => null,
+                    'required' => false
+                ),
             ),
             'increment_key' => 'id',
             'keys' => array( 'identifier' ),
@@ -46,9 +52,17 @@ class OWScriptLogger_Script extends eZPersistentObject {
             'grouping' => array( ),
             'class_name' => 'OWScriptLogger_Script',
             'name' => 'owscriptlogger_script',
-            'function_attributes' => array( ),
+            'function_attributes' => array( 'no_db_log_action_list' => 'getNoDBLogActionList' ),
             'set_functions' => array( )
         );
+    }
+
+    public function getNoDBLogActionList( ) {
+        $actions = explode( PHP_EOL, $this->attribute( 'no_db_log_actions' ) );
+        foreach( $actions as $index => $action ) {
+            $actions[$index] = trim( $action );
+        }
+        return $actions;
     }
 
     static function findOrCreate( $identifier ) {

@@ -66,6 +66,15 @@
                                                 <input type="text" name="ParametersArray[max_age_manually_stoped]" value="{$script.max_age_manually_stoped}" />
                                             </div></td>
                                         </tr>
+                                        <tr class="yui-dt-even">
+                                            <td class="script_no_db_log_actions script_param_title"><div class="yui-dt-liner">
+                                                {'No database log for actions'|i18n('owscriptlogger/scripts' )} 
+                                                <p class="help">{'One action per line'|i18n('owscriptlogger/scripts' )}</p>
+                                            </div></td>
+                                            <td class="script_no_db_log_actions"><div class="yui-dt-liner">
+                                                <textarea name="ParametersArray[no_db_log_actions]">{$script.no_db_log_actions}</textarea>
+                                            </div></td>
+                                        </tr>
 	                                </tbody>
 	                            </table>
 	                        </div>

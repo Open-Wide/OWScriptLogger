@@ -33,3 +33,4 @@ CREATE TABLE owscriptlogger_script (
     max_age_manually_stoped int DEFAULT '0',
     PRIMARY KEY ( id )
 );
+ALTER TABLE owscriptlogger_script ADD COLUMN no_db_log_actions text DEFAULT NULL;

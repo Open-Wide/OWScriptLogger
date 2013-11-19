@@ -95,7 +95,9 @@ class OWScriptLogger extends eZPersistentObject {
     protected $_errorLogFile = 'owscriptlogger-error.log';
     protected $_warningLogFile = 'owscriptlogger-warning.log';
     protected $_noticeLogFile = 'owscriptlogger-notice.log';
+
     protected $_allowedDatabaseDebugLevel = self::NOTICELOG;
+    protected $_noDBLogActions = array( );
 
     protected static $_timer;
     public static $_storeObjectInDB = FALSE;
@@ -115,6 +117,7 @@ class OWScriptLogger extends eZPersistentObject {
         $logIdentifier = $trans->transformByGroup( $logIdentifier, 'identifier' );
         $logger = new OWScriptLogger( $logIdentifier );
         $logger->_allowedDatabaseDebugLevel = $logger->attribute( 'script' )->attribute( 'database_log_level' );
+        $logger->_noDBLogActions = $logger->attribute( 'script' )->attribute( 'no_db_log_action_list' );
         eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
         eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
         set_exception_handler( 'OWScriptLoggerExceptionHandler' );
@@ -183,6 +186,9 @@ class OWScriptLogger extends eZPersistentObject {
                     self::writeNotice( $msg, $action );
                 }
                 break;
+        }
+        if( in_array( $action, $logger->_noDBLogActions ) ) {
+            $storeInDatabase = FALSE;
         }
         if( $storeInDatabase ) {
             $logger->store( );
