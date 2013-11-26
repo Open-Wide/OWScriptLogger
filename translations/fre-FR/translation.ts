@@ -9,8 +9,8 @@
 <context>
     <name>design/admin/parts/owscriptlogger/menu</name>
     <message>
-        <source>OW Script Logger</source>
-        <translation>OW Script Logger</translation>
+        <source>Script logger</source>
+        <translation>Script logger</translation>
     </message>
     <message>
         <source>Logs</source>

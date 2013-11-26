@@ -24,7 +24,7 @@ PolicyList[]
 PolicyList[]=owscriptlogger/read
 
 [Leftmenu_owscriptlogger]
-Name=OW Script Logger
+Name=Script logger
 Links[logs]=owscriptlogger/logs
 Links[scripts]=owscriptlogger/scripts
 LinkNames[]

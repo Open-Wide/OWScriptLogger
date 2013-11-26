@@ -25,15 +25,21 @@ if( is_null( $LoggerID ) ) {
 
 $Result['left_menu'] = 'design:owscriptlogger/menu.tpl';
 if( function_exists( 'ezi18n' ) ) {
-    $Result['path'] = array( array(
+    $Result['path'] = array(
+        array( 'text' => ezi18n( 'design/admin/parts/owscriptlogger/menu', 'Script logger' ) ),
+        array(
             'url' => 'owscriptlogger/logs',
-            'text' => ezi18n( 'owscriptlogger/logs', 'Logs' )
-        ) );
+            'text' => ezi18n( 'design/admin/parts/owscriptlogger/menu', 'Logs' )
+        )
+    );
 
 } else {
-    $Result['path'] = array( array(
+    $Result['path'] = array(
+        array( 'text' => ezpI18n::tr( 'design/admin/parts/owscriptlogger/menu', 'Script logger' ) ),
+        array(
             'url' => 'owscriptlogger/logs',
-            'text' => ezpI18n::tr( 'owscriptlogger/logs', 'Logs' )
-        ) );
+            'text' => ezpI18n::tr( 'design/admin/parts/owscriptlogger/menu', 'Logs' )
+        )
+    );
 
 }

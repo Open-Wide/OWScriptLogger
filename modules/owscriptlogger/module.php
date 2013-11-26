@@ -1,6 +1,6 @@
 <?php
 
-$Module = array( 'name' => 'OW Script Logger' );
+$Module = array( 'name' => 'Script logger' );
 
 $ViewList = array( );
 $ViewList['logs'] = array(
