@@ -1,155 +1,156 @@
 <?php
+
 // This array contains the database schema
 $schema = array(
-    'owscriptlogger' => array(
-        'name' => 'owscriptlogger',
-        'fields' => array(
-            'id' => array(
-                'type' => 'auto_increment',
-                'default' => FALSE,
-            ),
-            'identifier' => array(
-                'length' => 100,
-                'type' => 'varchar',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-            'owscriptlogger_script_id' => array(
-                'length' => 11,
-                'type' => 'int',
-                'not_null' => TRUE,
-                'default' => 0,
-            ),
-            'date' => array(
-                'type' => 'datetime',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-            'runtime' => array(
-                'type' => 'float',
-                'default' => NULL,
-            ),
-            'memory_usage' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => NULL,
-            ),
-            'memory_usage_peak' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => NULL,
-            ),
-            'notice_count' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => NULL,
-            ),
-            'warning_count' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => NULL,
-            ),
-            'error_count' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => NULL,
-            ),
-            'status' => array(
-                'length' => 100,
-                'type' => 'varchar',
-                'not_null' => TRUE,
-                'default' => 'running',
-            ),
-        ),
-        'indexes' => array( 'PRIMARY' => array(
-                'type' => 'primary',
-                'fields' => array( 0 => 'id', ),
-            ) )
-    ),
-    'owscriptlogger_log' => array(
-        'name' => 'owscriptlogger_log',
-        'fields' => array(
-            'owscriptlogger_id' => array(
-                'length' => 11,
-                'type' => 'int',
-                'not_null' => TRUE,
-                'default' => 0,
-            ),
-            'level' => array(
-                'length' => 100,
-                'type' => 'varchar',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-            'action' => array(
-                'length' => 100,
-                'type' => 'varchar',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-            'date' => array(
-                'type' => 'datetime',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-            'message' => array(
-                'type' => 'longtext',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-        ),
-        'indexes' => array( ),
-    ),
-    'owscriptlogger_script' => array(
-        'name' => 'owscriptlogger_script',
-        'fields' => array(
-            'id' => array(
-                'type' => 'auto_increment',
-                'default' => FALSE,
-            ),
-            'identifier' => array(
-                'length' => 100,
-                'type' => 'varchar',
-                'not_null' => TRUE,
-                'default' => FALSE,
-            ),
-            'database_log_level' => array(
-                'length' => 10,
-                'type' => 'varchar',
-                'not_null' => TRUE,
-                'default' => 'notive',
-            ),
-            'fatal_error_recipients' => array(
-                'type' => 'text',
-                'not_null' => FALSE,
-                'default' => NULL,
-            ),
-            'max_age_error' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => 0,
-            ),
-            'max_age_finished' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => 0,
-            ),
-            'max_age_manually_stoped' => array(
-                'type' => 'int',
-                'size' => 11,
-                'default' => 0,
-            ),
-            'no_db_log_actions' => array(
-                'type' => 'text',
-                'not_null' => FALSE,
-                'default' => NULL,
-            ),
-        ),
-        'indexes' => array( 'PRIMARY' => array(
-                'type' => 'primary',
-                'fields' => array( 0 => 'id', ),
-            ) )
-    ),
-    '_info' => array( 'format' => 'generic', ),
+	'owscriptlogger' => array(
+		'name' => 'owscriptlogger',
+		'fields' => array(
+			'id' => array(
+				'type' => 'auto_increment',
+				'default' => FALSE,
+			),
+			'identifier' => array(
+				'length' => 100,
+				'type' => 'varchar',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+			'owscriptlogger_script_id' => array(
+				'length' => 11,
+				'type' => 'int',
+				'not_null' => TRUE,
+				'default' => 0,
+			),
+			'date' => array(
+				'type' => 'datetime',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+			'runtime' => array(
+				'type' => 'float',
+				'default' => NULL,
+			),
+			'memory_usage' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => NULL,
+			),
+			'memory_usage_peak' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => NULL,
+			),
+			'notice_count' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => NULL,
+			),
+			'warning_count' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => NULL,
+			),
+			'error_count' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => NULL,
+			),
+			'status' => array(
+				'length' => 100,
+				'type' => 'varchar',
+				'not_null' => TRUE,
+				'default' => 'running',
+			),
+		),
+		'indexes' => array( 'PRIMARY' => array(
+				'type' => 'primary',
+				'fields' => array( 0 => 'id', ),
+			) )
+	),
+	'owscriptlogger_log' => array(
+		'name' => 'owscriptlogger_log',
+		'fields' => array(
+			'owscriptlogger_id' => array(
+				'length' => 11,
+				'type' => 'int',
+				'not_null' => TRUE,
+				'default' => 0,
+			),
+			'level' => array(
+				'length' => 100,
+				'type' => 'varchar',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+			'action' => array(
+				'length' => 100,
+				'type' => 'varchar',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+			'date' => array(
+				'type' => 'datetime',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+			'message' => array(
+				'type' => 'longtext',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+		),
+		'indexes' => array(),
+	),
+	'owscriptlogger_script' => array(
+		'name' => 'owscriptlogger_script',
+		'fields' => array(
+			'id' => array(
+				'type' => 'auto_increment',
+				'default' => FALSE,
+			),
+			'identifier' => array(
+				'length' => 100,
+				'type' => 'varchar',
+				'not_null' => TRUE,
+				'default' => FALSE,
+			),
+			'database_log_level' => array(
+				'length' => 10,
+				'type' => 'varchar',
+				'not_null' => TRUE,
+				'default' => 'notive',
+			),
+			'fatal_error_recipients' => array(
+				'type' => 'text',
+				'not_null' => false,
+				'default' => false,
+			),
+			'max_age_error' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => 0,
+			),
+			'max_age_finished' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => 0,
+			),
+			'max_age_manually_stoped' => array(
+				'type' => 'int',
+				'size' => 11,
+				'default' => 0,
+			),
+			'no_db_log_actions' => array(
+				'type' => 'text',
+				'not_null' => false,
+				'default' => false,
+			),
+		),
+		'indexes' => array( 'PRIMARY' => array(
+				'type' => 'primary',
+				'fields' => array( 0 => 'id', ),
+			) )
+	),
+	'_info' => array( 'format' => 'generic', ),
 );
 ?>
