@@ -516,8 +516,8 @@ class OWScriptLogger extends eZPersistentObject {
         }
     }
 
-    static function fetchList( $conds = array(), $limit = NULL ) {
-        return self::fetchObjectList( self::definition( ), null, $conds, array( 'date' => 'asc', ), $limit, true, false, null, null, null );
+    static function fetchList( $conds = array(), $order = 'asc', $limit = NULL ) {
+    	return self::fetchObjectList( self::definition( ), null, $conds, array( 'date' => $order, ), $limit, true, false, null, null, null );
     }
 
     static function fetch( $id ) {
