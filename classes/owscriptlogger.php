@@ -127,7 +127,6 @@ class OWScriptLogger extends eZPersistentObject {
     }
 
     public function setAllowedDatabaseDebugLevel( $level ) {
-        trigger_error( "OWScriptLogger::setAllowedDatabaseDebugLevel() is deprecated. Use backend script configuration instead", E_USER_DEPRECATED );
         try {
             $logger = self::instance( );
             $logger->_allowedDatabaseDebugLevel = $level;
