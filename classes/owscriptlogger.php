@@ -186,7 +186,7 @@ class OWScriptLogger extends eZPersistentObject {
                 }
                 break;
         }
-        if( in_array( $action, $logger->_noDBLogActions ) ) {
+        if( !isset( $logger ) || in_array( $action, $logger->_noDBLogActions ) ) {
             $storeInDatabase = FALSE;
         }
         if( $storeInDatabase ) {
@@ -372,7 +372,6 @@ class OWScriptLogger extends eZPersistentObject {
             $row['identifier'] = $identifier_or_row;
         }
         if( isset( $row['identifier'] ) ) {
-            $saveRow = FALSE;
             $identifier = $row['identifier'];
             unset( $row['identifier'] );
             if( $row['owscriptlogger_script_id'] == 0 ) {
@@ -383,9 +382,6 @@ class OWScriptLogger extends eZPersistentObject {
                 $saveRow = TRUE;
             }
             parent::__construct( $row );
-            if( $saveRow ) {
-                $this->store( );
-            }
             $this->_errorLogFile = $identifier . '-error.log';
             $this->_warningLogFile = $identifier . '-warning.log';
             $this->_noticeLogFile = $identifier . '-notice.log';
