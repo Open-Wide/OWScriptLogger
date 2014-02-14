@@ -109,15 +109,17 @@ class OWScriptLogger extends eZPersistentObject {
 	protected $_noticeLogFile = 'owscriptlogger-notice.log';
 	protected $_allowedDatabaseDebugLevel = self::NOTICELOG;
 	protected $_noDBLogActions = array();
+	
 	protected static $_timer;
+	protected static $_cli;
+	protected static $_instance;
 	public static $_storeObjectInDB = FALSE;
-	protected static $cli;
 
 	static function instance() {
-		if ( !isset( $GLOBALS['OWScriptLoggerInstance'] ) || !($GLOBALS['OWScriptLoggerInstance'] instanceof OWScriptLogger) ) {
+		if ( !self::$_instance ) {
 			throw new Exception( "OWScriptLogger instance not found. Call startLog() method before starting to log messages." );
 		}
-		return $GLOBALS['OWScriptLoggerInstance'];
+		return self::$_instance;
 	}
 
 	public static function startLog( $logIdentifier ) {
@@ -130,7 +132,7 @@ class OWScriptLogger extends eZPersistentObject {
 		eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
 		eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
 		set_exception_handler( 'OWScriptLoggerExceptionHandler' );
-		$GLOBALS['OWScriptLoggerInstance'] = $logger;
+		self::$_instance = $logger;
 		OWScriptLogger::$_timer = new ezcDebugTimer( );
 		OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
 	}
@@ -236,13 +238,13 @@ class OWScriptLogger extends eZPersistentObject {
 		} catch ( Exception $e ) {
 			$label = 'OWScriptLogger';
 		}
-		self::$cli = eZCLI::instance();
-		$isWebOutput = self::$cli->isWebOutput();
+		self::$_cli = eZCLI::instance();
+		$isWebOutput = self::$_cli->isWebOutput();
 		$msg = $action . '::' . $msg;
 		switch ( $logType ) {
 			case self::ERRORLOG :
 				if ( !$isWebOutput ) {
-					self::$cli->error( $msg );
+					self::$_cli->error( $msg );
 				} else {
 					eZDebug::writeError( $msg, $label );
 				}
@@ -250,7 +252,7 @@ class OWScriptLogger extends eZPersistentObject {
 
 			case self::WARNINGLOG :
 				if ( !$isWebOutput ) {
-					self::$cli->warning( $msg );
+					self::$_cli->warning( $msg );
 				} else {
 					eZDebug::writeWarning( $msg, $label );
 				}
@@ -259,7 +261,7 @@ class OWScriptLogger extends eZPersistentObject {
 			case self::NOTICELOG :
 			default :
 				if ( !$isWebOutput ) {
-					self::$cli->notice( $msg );
+					self::$_cli->notice( $msg );
 				} else {
 					eZDebug::writeNotice( $msg, $label );
 				}
