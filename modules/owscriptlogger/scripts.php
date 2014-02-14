@@ -40,7 +40,7 @@ if( function_exists( 'ezi18n' ) ) {
 
 } else {
     $Result['path'] = array(
-        array( 'text' => ezi18n( 'design/admin/parts/owscriptlogger/menu', 'Script logger' ) ),
+        array( 'text' => ezpI18n::tr( 'design/admin/parts/owscriptlogger/menu', 'Script logger' ) ),
         array(
             'url' => 'owscriptlogger/scripts',
             'text' => ezpI18n::tr( 'design/admin/parts/owscriptlogger/menu', 'Scripts' )
