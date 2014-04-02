@@ -36,11 +36,14 @@ class OWScriptLogger extends eZPersistentObject {
         $logger = new OWScriptLogger( $logIdentifier );
         $logger->_allowedDatabaseDebugLevel = $logger->attribute( 'script' )->attribute( 'database_log_level' );
         $logger->_noDBLogActions = $logger->attribute( 'script' )->attribute( 'no_db_log_action_list' );
-        eZDebug::setHandleType( eZDebug::HANDLE_TO_PHP );
+        $cli = eZCLI::instance();
+        if ( !$cli->isWebOutput() ) {
+            eZDebug::setHandleType( eZDebug::HANDLE_TO_PHP );
+            set_error_handler( 'OWScriptLoggerNoticeError', E_NOTICE | E_USER_NOTICE );
+            set_error_handler( 'OWScriptLoggerWarningError', E_WARNING | E_USER_WARNING );
+        }
         eZExecution::addFatalErrorHandler( 'OWScriptLoggerFatalError' );
         eZExecution::addCleanupHandler( 'OWScriptLoggerCleanupHandler' );
-        set_error_handler( 'OWScriptLoggerNoticeError', E_NOTICE | E_USER_NOTICE );
-        set_error_handler( 'OWScriptLoggerWarningError', E_WARNING | E_USER_WARNING );
         set_exception_handler( 'OWScriptLoggerExceptionHandler' );
         self::$_instance = $logger;
         OWScriptLogger::$_timer = new ezcDebugTimer( );
