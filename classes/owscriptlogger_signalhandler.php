@@ -93,3 +93,11 @@ function OWScriptLoggerCleanupHandler() {
 		}
 	}
 }
+
+function OWScriptLoggerNoticeError($errno, $errstr, $errfile, $errline) {
+    OWScriptLogger::logWarning("PHP Notice: $errstr in $errfile on line $errline", 'php_notice');
+}
+
+function OWScriptLoggerWarningError($errno, $errstr, $errfile, $errline) {
+    OWScriptLogger::logWarning("PHP Warning: $errstr in $errfile on line $errline", 'php_warning');
+}
