@@ -40,8 +40,20 @@ p.help {
     color: #333;
 }
 
+.yui-dt-even.level_debug {
+    background-color: #D5D7F2;
+}
+
+.yui-dt-odd.level_debug {
+    background-color: #CBCEF2;
+}
+
+.yui-dt tbody tr.level_debug:hover {
+    background-color: #C2C5F2;
+}
+
 .yui-dt-even.level_notice {
-    background-color: #FAFFF5;
+    background-color: #E9FFD3;
 }
 
 .yui-dt-odd.level_notice {

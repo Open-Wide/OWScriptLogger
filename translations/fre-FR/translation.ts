@@ -32,6 +32,10 @@
         <translation>Enregistrer</translation>
     </message>
     <message>
+        <source>Debug</source>
+        <translation>Debug</translation>
+    </message>
+    <message>
         <source>Notice</source>
         <translation>Notice</translation>
     </message>

@@ -24,10 +24,12 @@
                                             <td class="script_database_log_level script_param_title"><div class="yui-dt-liner">{'Database log level'|i18n('owscriptlogger/scripts' )}</div></td>
                                             <td class="script_database_log_level"><div class="yui-dt-liner">
                                                 <select name="ParametersArray[database_log_level]">
+                                                    <option value="debug" {if $script.database_log_level|eq('debug')}selected="selected"{/if}>{'Debug'|i18n('owscriptlogger/all' )}</option>
                                                     <option value="notice" {if $script.database_log_level|eq('notice')}selected="selected"{/if}>{'Notice'|i18n('owscriptlogger/all' )}</option>
                                                     <option value="warning" {if $script.database_log_level|eq('warning')}selected="selected"{/if}>{'Warning'|i18n('owscriptlogger/all' )}</option>
                                                     <option value="error" {if $script.database_log_level|eq('error')}selected="selected"{/if}>{'Error'|i18n('owscriptlogger/all' )}</option>
                                                     <option value="disabled" {if $script.database_log_level|eq('disabled')}selected="selected"{/if}>{'Disabled'|i18n('owscriptlogger/all' )}</option>
+                                                </select>
                                             </div></td>
                                         </tr>
                                         <tr class="yui-dt-even">

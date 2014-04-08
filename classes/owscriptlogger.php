@@ -4,6 +4,7 @@ require_once 'extension/owscriptlogger/classes/owscriptlogger_signalhandler.php'
 
 class OWScriptLogger extends eZPersistentObject {
 
+    const DEBUGLOG = 'debug';
     const NOTICELOG = 'notice';
     const ERRORLOG = 'error';
     const WARNINGLOG = 'warning';
@@ -15,7 +16,8 @@ class OWScriptLogger extends eZPersistentObject {
     protected $_errorLogFile = 'owscriptlogger-error.log';
     protected $_warningLogFile = 'owscriptlogger-warning.log';
     protected $_noticeLogFile = 'owscriptlogger-notice.log';
-    protected $_allowedDatabaseDebugLevel = self::NOTICELOG;
+    protected $_debugLogFile = 'owscriptlogger-debug.log';
+    protected $_allowedDatabaseDebugLevel = self::DEBUGLOG;
     protected $_noDBLogActions = array();
     protected static $_timer;
     protected static $_cli;
@@ -72,7 +74,7 @@ class OWScriptLogger extends eZPersistentObject {
         switch ( $logType ) {
             case self::ERRORLOG :
                 if ( isset( $logger ) ) {
-                    if ( $logger->_allowedDatabaseDebugLevel == self::NOTICELOG || $logger->_allowedDatabaseDebugLevel == self::WARNINGLOG || $logger->_allowedDatabaseDebugLevel == self::ERRORLOG ) {
+                    if ( $logger->_allowedDatabaseDebugLevel == self::DEBUGLOG || $logger->_allowedDatabaseDebugLevel == self::NOTICELOG || $logger->_allowedDatabaseDebugLevel == self::WARNINGLOG || $logger->_allowedDatabaseDebugLevel == self::ERRORLOG ) {
                         $storeInDatabase = TRUE;
                     }
                     $logFile = $logger->_errorLogFile;
@@ -86,7 +88,7 @@ class OWScriptLogger extends eZPersistentObject {
 
             case self::WARNINGLOG :
                 if ( isset( $logger ) ) {
-                    if ( $logger->_allowedDatabaseDebugLevel == self::NOTICELOG || $logger->_allowedDatabaseDebugLevel == self::WARNINGLOG ) {
+                    if ( $logger->_allowedDatabaseDebugLevel == self::DEBUGLOG || $logger->_allowedDatabaseDebugLevel == self::NOTICELOG || $logger->_allowedDatabaseDebugLevel == self::WARNINGLOG ) {
                         $storeInDatabase = TRUE;
                     }
                     $logFile = $logger->_warningLogFile;
@@ -100,12 +102,26 @@ class OWScriptLogger extends eZPersistentObject {
 
             case self::NOTICELOG :
                 if ( isset( $logger ) ) {
-                    if ( $logger->_allowedDatabaseDebugLevel == self::NOTICELOG ) {
+                    if ( $logger->_allowedDatabaseDebugLevel == self::DEBUGLOG || $logger->_allowedDatabaseDebugLevel == self::NOTICELOG ) {
                         $storeInDatabase = TRUE;
                     }
                     $logFile = $logger->_noticeLogFile;
                 } else {
                     $logFile = 'owscriptlogger-notice.log';
+                }
+                if ( $bPrintMsg ) {
+                    self::writeNotice( $msg, $action );
+                }
+                break;
+
+            case self::DEBUGLOG :
+                if ( isset( $logger ) ) {
+                    if ( $logger->_allowedDatabaseDebugLevel == self::DEBUGLOG ) {
+                        $storeInDatabase = TRUE;
+                    }
+                    $logFile = $logger->_noticeLogFile;
+                } else {
+                    $logFile = 'owscriptlogger-debug.log';
                 }
                 if ( $bPrintMsg ) {
                     self::writeNotice( $msg, $action );
@@ -130,6 +146,10 @@ class OWScriptLogger extends eZPersistentObject {
         if ( isset( $logFile ) ) {
             eZLog::write( $msg, $logFile );
         }
+    }
+
+    public static function logDebug( $msg, $action = 'undefined', $bPrintMsg = true ) {
+        self::logMessage( $msg, $action, $bPrintMsg, self::DEBUGLOG );
     }
 
     public static function logNotice( $msg, $action = 'undefined', $bPrintMsg = true ) {
@@ -179,6 +199,15 @@ class OWScriptLogger extends eZPersistentObject {
                     eZDebug::writeNotice( $msg, $label );
                 }
                 break;
+
+            case self::DEBUGLOG :
+            default :
+                if ( !$isWebOutput ) {
+                    self::$_cli->debug( $msg );
+                } else {
+                    eZDebug::writeDebug( $msg, $label );
+                }
+                break;
         }
     }
 
@@ -192,6 +221,10 @@ class OWScriptLogger extends eZPersistentObject {
 
     public static function writeNotice( $msg, $action = 'undefined' ) {
         self::writeMessage( $msg, $action, self::NOTICELOG );
+    }
+
+    public static function writeDebug( $msg, $action = 'undefined' ) {
+        self::writeMessage( $msg, $action, self::DEBUGLOG );
     }
 
     /* eZPersistentObject methods */
@@ -311,6 +344,7 @@ class OWScriptLogger extends eZPersistentObject {
             $this->_errorLogFile = $identifier . '-error.log';
             $this->_warningLogFile = $identifier . '-warning.log';
             $this->_noticeLogFile = $identifier . '-notice.log';
+            $this->_debugLogFile = $identifier . '-debug.log';
         } else {
             throw new OWScriptLoggerException( __METHOD__ . " : Script logger identifier must be set" );
         }
@@ -403,8 +437,9 @@ class OWScriptLogger extends eZPersistentObject {
             $ini = eZINI::instance();
             $mail = new eZMail( );
 
-            if ( $tpl->hasVariable( 'content_type' ) )
+            if ( $tpl->hasVariable( 'content_type' ) ) {
                 $mail->setContentType( $tpl->variable( 'content_type' ) );
+            }
 
             $receiver = trim( array_shift( $recipients ) );
             if ( !$mail->validate( $receiver ) ) {
@@ -414,11 +449,13 @@ class OWScriptLogger extends eZPersistentObject {
 
             $ccReceivers = $recipients;
             if ( !empty( $ccReceivers ) ) {
-                if ( !is_array( $ccReceivers ) )
+                if ( !is_array( $ccReceivers ) ) {
                     $ccReceivers = array( $ccReceivers );
+                }
                 foreach ( $ccReceivers as $ccReceiver ) {
-                    if ( $mail->validate( $ccReceiver ) )
+                    if ( $mail->validate( $ccReceiver ) ) {
                         $mail->addCc( $ccReceiver );
+                    }
                 }
             }
 
@@ -433,7 +470,7 @@ class OWScriptLogger extends eZPersistentObject {
 
             $mail->setSubject( $subject );
             $mail->setBody( $templateResult );
-            $mailResult = eZMailTransport::send( $mail );
+            eZMailTransport::send( $mail );
         }
     }
 

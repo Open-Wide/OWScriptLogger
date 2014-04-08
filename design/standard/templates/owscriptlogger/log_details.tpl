@@ -17,6 +17,7 @@
 	                        <fieldset>
 	                            <legend>{'Filters'|i18n('owscriptlogger/logs' )}</legend>
 	                            <label>{'Level'|i18n('owscriptlogger/logs' )}</label>
+	                            <input type="checkbox" class="level_filter" id="level_debug" checked="checked" />{'Debug'|i18n('owscriptlogger/all' )}
 	                            <input type="checkbox" class="level_filter" id="level_notice" checked="checked" />{'Notice'|i18n('owscriptlogger/all' )}
 	                            <input type="checkbox" class="level_filter" id="level_warning" checked="checked" />{'Warning'|i18n('owscriptlogger/all' )}
 	                            <input type="checkbox" class="level_filter" id="level_error" checked="checked" />{'Error'|i18n('owscriptlogger/all' )}
