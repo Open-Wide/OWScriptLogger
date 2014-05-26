@@ -52,7 +52,7 @@ class OWScriptLogger extends eZPersistentObject {
         OWScriptLogger::$_timer->startTimer( $logger->attribute( 'identifier' ), 'OWScriptLogger' );
     }
 
-    public function setAllowedDatabaseDebugLevel( $level ) {
+    public static function setAllowedDatabaseDebugLevel( $level ) {
         try {
             $logger = self::instance();
             $logger->_allowedDatabaseDebugLevel = $level;
