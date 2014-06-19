@@ -15,7 +15,7 @@ if( is_null( $LoggerID ) ) {
         $deleteIDArray = $Module->actionParameter( 'DeleteIDArray' );
         OWScriptLogger::removeList( $deleteIDArray );
     }
-    $tpl->setVariable( 'logger_list', OWScriptLogger::fetchList( ) );
+    $tpl->setVariable( 'logger_list', OWScriptLogger::fetchList( array(), 'desc' ) );
     $tpl->setVariable( 'logger_identifer_list', OWScriptLogger::fetchIdentifierList( ) );
     $Result['content'] = $tpl->fetch( 'design:owscriptlogger/logs.tpl' );
 } else {
