@@ -5,7 +5,6 @@ CREATE TABLE `owscriptlogger` (
  `runtime` float DEFAULT NULL,
  `memory_usage` int(11) DEFAULT NULL,
  `memory_usage_peak` int(11) DEFAULT NULL,
- `notice_count` int(11) NOT NULL DEFAULT '0',
  PRIMARY KEY (`id`)
 );
 
