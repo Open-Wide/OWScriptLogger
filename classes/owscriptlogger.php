@@ -5,6 +5,7 @@ require_once 'extension/owscriptlogger/classes/owscriptlogger_signalhandler.php'
 class OWScriptLogger extends eZPersistentObject {
 
     const DEBUGLOG = 'debug';
+    const HIGHLIGHTNOTICELOG = 'h_notice';
     const NOTICELOG = 'notice';
     const ERRORLOG = 'error';
     const WARNINGLOG = 'warning';
@@ -61,7 +62,7 @@ class OWScriptLogger extends eZPersistentObject {
         }
     }
 
-    public static function logMessage( $msg, $action = 'undefined', $bPrintMsg = true, $logType = self::NOTICELOG ) {
+    public static function logMessage( $msg, $action = 'undefined', $highlight = false, $bPrintMsg = true, $logType = self::NOTICELOG ) {
         $storeInDatabase = FALSE;
         try {
             $logger = self::instance();
@@ -82,7 +83,7 @@ class OWScriptLogger extends eZPersistentObject {
                     $logFile = 'owscriptlogger-error.log';
                 }
                 if ( $bPrintMsg ) {
-                    self::writeError( $msg, $action );
+                    self::writeError( $msg, $action, $highlight );
                 }
                 break;
 
@@ -96,7 +97,7 @@ class OWScriptLogger extends eZPersistentObject {
                     $logFile = 'owscriptlogger-warning.log';
                 }
                 if ( $bPrintMsg ) {
-                    self::writeWarning( $msg, $action );
+                    self::writeWarning( $msg, $action, $highlight );
                 }
                 break;
 
@@ -110,7 +111,7 @@ class OWScriptLogger extends eZPersistentObject {
                     $logFile = 'owscriptlogger-notice.log';
                 }
                 if ( $bPrintMsg ) {
-                    self::writeNotice( $msg, $action );
+                    self::writeNotice( $msg, $action, $highlight );
                 }
                 break;
 
@@ -119,12 +120,12 @@ class OWScriptLogger extends eZPersistentObject {
                     if ( $logger->_allowedDatabaseDebugLevel == self::DEBUGLOG ) {
                         $storeInDatabase = TRUE;
                     }
-                    $logFile = $logger->_noticeLogFile;
+                    $logFile = $logger->_debugLogFile;
                 } else {
                     $logFile = 'owscriptlogger-debug.log';
                 }
                 if ( $bPrintMsg ) {
-                    self::writeNotice( $msg, $action );
+                    self::writeDebug( $msg, $action, $highlight );
                 }
                 break;
         }
@@ -148,23 +149,23 @@ class OWScriptLogger extends eZPersistentObject {
         }
     }
 
-    public static function logDebug( $msg, $action = 'undefined', $bPrintMsg = true ) {
-        self::logMessage( $msg, $action, $bPrintMsg, self::DEBUGLOG );
+    public static function logDebug( $msg, $action = 'undefined', $highlight = false, $bPrintMsg = true ) {
+        self::logMessage( $msg, $action, $highlight, $bPrintMsg, self::DEBUGLOG );
     }
 
-    public static function logNotice( $msg, $action = 'undefined', $bPrintMsg = true ) {
-        self::logMessage( $msg, $action, $bPrintMsg, self::NOTICELOG );
+    public static function logNotice( $msg, $action = 'undefined', $highlight = false, $bPrintMsg = true ) {
+        self::logMessage( $msg, $action, $highlight, $bPrintMsg, self::NOTICELOG );
     }
 
-    public static function logWarning( $msg, $action = 'undefined', $bPrintMsg = true ) {
-        self::logMessage( $msg, $action, $bPrintMsg, self::WARNINGLOG );
+    public static function logWarning( $msg, $action = 'undefined', $highlight = false, $bPrintMsg = true ) {
+        self::logMessage( $msg, $action, $highlight, $bPrintMsg, self::WARNINGLOG );
     }
 
-    public static function logError( $msg, $action = 'undefined', $bPrintMsg = true ) {
-        self::logMessage( $msg, $action, $bPrintMsg, self::ERRORLOG );
+    public static function logError( $msg, $action = 'undefined', $highlight = false, $bPrintMsg = true ) {
+        self::logMessage( $msg, $action, $highlight, $bPrintMsg, self::ERRORLOG );
     }
 
-    public static function writeMessage( $msg, $action = 'undefined', $logType = self::NOTICELOG ) {
+    public static function writeMessage( $msg, $action = 'undefined', $highlight = false, $logType = self::NOTICELOG ) {
         try {
             $logger = self::instance();
             $label = $logger->attribute( 'identifier' );
@@ -177,7 +178,7 @@ class OWScriptLogger extends eZPersistentObject {
         switch ( $logType ) {
             case self::ERRORLOG :
                 if ( !$isWebOutput ) {
-                    self::$_cli->error( $msg );
+                    self::cliError( $msg, $highlight );
                 } else {
                     eZDebug::writeError( $msg, $label );
                 }
@@ -185,7 +186,7 @@ class OWScriptLogger extends eZPersistentObject {
 
             case self::WARNINGLOG :
                 if ( !$isWebOutput ) {
-                    self::$_cli->warning( $msg );
+                    self::cliWarning( $msg, $highlight );
                 } else {
                     eZDebug::writeWarning( $msg, $label );
                 }
@@ -194,7 +195,7 @@ class OWScriptLogger extends eZPersistentObject {
             case self::NOTICELOG :
             default :
                 if ( !$isWebOutput ) {
-                    self::$_cli->notice( $msg );
+                    self::cliNotice( $msg, $highlight );
                 } else {
                     eZDebug::writeNotice( $msg, $label );
                 }
@@ -203,7 +204,7 @@ class OWScriptLogger extends eZPersistentObject {
             case self::DEBUGLOG :
             default :
                 if ( !$isWebOutput ) {
-                    self::$_cli->debug( $msg );
+                    self::cliDebug( $msg, $highlight );
                 } else {
                     eZDebug::writeDebug( $msg, $label );
                 }
@@ -211,20 +212,60 @@ class OWScriptLogger extends eZPersistentObject {
         }
     }
 
-    public static function writeError( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, $action, self::ERRORLOG );
+    public static function writeError( $msg, $action = 'undefined', $highlight = false ) {
+        self::writeMessage( $msg, $action, $highlight, self::ERRORLOG );
     }
 
-    public static function writeWarning( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, $action, self::WARNINGLOG );
+    public static function writeWarning( $msg, $action = 'undefined', $highlight = false ) {
+        self::writeMessage( $msg, $action, $highlight, self::WARNINGLOG );
     }
 
-    public static function writeNotice( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, $action, self::NOTICELOG );
+    public static function writeNotice( $msg, $action = 'undefined', $highlight = false ) {
+        self::writeMessage( $msg, $action, $highlight, self::NOTICELOG );
     }
 
-    public static function writeDebug( $msg, $action = 'undefined' ) {
-        self::writeMessage( $msg, $action, self::DEBUGLOG );
+    public static function writeDebug( $msg, $action = 'undefined', $highlight = false ) {
+        self::writeMessage( $msg, $action, $highlight, self::DEBUGLOG );
+    }
+
+    public static function cliError( $string = false, $highlight = false ) {
+        self::$_cli = eZCLI::instance();
+        self::$_cli->TerminalStyles['red'] = "\033[1;49;91m";
+        self::$_cli->TerminalStyles['red-bg'] = "\033[7;49;91m";
+        $style = $highlight ? 'red-bg' : 'red';
+        $string = self::$_cli->stylize( $style, $string );
+        fputs( STDERR, $string );
+        fputs( STDERR, self::$_cli->endlineString() );
+    }
+
+    public static function cliWarning( $string = false, $highlight = false ) {
+        self::$_cli = eZCLI::instance();
+        self::$_cli->TerminalStyles['yellow'] = "\033[1;49;93m";
+        self::$_cli->TerminalStyles['yellow-bg'] = "\033[7;49;93m";
+        $style = $highlight ? 'yellow-bg' : 'yellow';
+        $string = self::$_cli->stylize( $style, $string );
+        fputs( STDERR, $string );
+        fputs( STDERR, self::$_cli->endlineString() );
+    }
+
+    public static function cliNotice( $string = false, $highlight = false ) {
+        self::$_cli = eZCLI::instance();
+        self::$_cli->TerminalStyles['green'] = "\033[1;49;32m";
+        self::$_cli->TerminalStyles['green-bg'] = "\033[7;49;92m";
+        $style = $highlight ? 'green-bg' : 'green';
+        $string = self::$_cli->stylize( $style, $string );
+        fputs( STDERR, $string );
+        fputs( STDERR, self::$_cli->endlineString() );
+    }
+
+    public static function cliDebug( $string = false, $highlight = false ) {
+        self::$_cli = eZCLI::instance();
+        self::$_cli->TerminalStyles['white'] = "\033[1;49;39m";
+        self::$_cli->TerminalStyles['white-bg'] = "\033[7;49;39m";
+        $style = $highlight ? 'white-bg' : 'white';
+        $string = self::$_cli->stylize( $style, $string );
+        fputs( STDERR, $string );
+        fputs( STDERR, self::$_cli->endlineString() );
     }
 
     /* eZPersistentObject methods */
@@ -412,9 +453,9 @@ class OWScriptLogger extends eZPersistentObject {
 
     public function countLog( $level ) {
         return OWScriptLogger_Log::countLog( array(
-                    'owscriptlogger_id' => $this->attribute( 'id' ),
-                    'level' => $level
-                ) );
+                'owscriptlogger_id' => $this->attribute( 'id' ),
+                'level' => $level
+            ) );
     }
 
     public function sendFatalErrorMessage( $msg ) {
@@ -493,7 +534,7 @@ class OWScriptLogger extends eZPersistentObject {
 
     static function fetchIdentifierList( $conds = array(), $limit = NULL ) {
         $identifierList = self::fetchObjectList( self::definition(), array( 'identifier' ), $conds, null, $limit, false, array(
-                    'identifier' ), null, null, null );
+                'identifier' ), null, null, null );
         if ( is_array( $identifierList ) ) {
             foreach ( $identifierList as $key => $item ) {
                 $identifierList[$key] = $item['identifier'];
