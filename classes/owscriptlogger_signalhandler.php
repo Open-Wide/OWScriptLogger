@@ -51,7 +51,7 @@ function OWScriptLoggerFatalError() {
         } else {
             $message = "Unknown error";
         }
-        $logger->logError( $message, 'fatal_error' );
+        $logger->logError( $message, 'fatal_error', true );
         $logger->sendFatalErrorMessage( $message );
         if ( OWScriptLogger::$_storeObjectInDB ) {
             $logger->storeExtraInfo();
@@ -84,7 +84,7 @@ function OWScriptLoggerCleanupHandler() {
             return FALSE;
         }
         $message = 'A DB transaction error occurred : #' . $db->errorNumber() . ' - "' . $db->errorMessage() . '"';
-        $logger->logError( $message, 'fatal_error' );
+        $logger->logError( $message, 'fatal_error', true );
         $logger->sendFatalErrorMessage( $message );
         if ( OWScriptLogger::$_storeObjectInDB ) {
             $logger->storeExtraInfo();
