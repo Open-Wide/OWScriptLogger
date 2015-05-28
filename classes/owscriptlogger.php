@@ -400,7 +400,9 @@ class OWScriptLogger extends eZPersistentObject {
             $this->setAttribute( 'memory_usage', memory_get_usage() );
             OWScriptLogger::$_timer->stopTimer( $this->attribute( 'identifier' ) );
             $timeData = OWScriptLogger::$_timer->getTimeData();
-            $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
+            if($timeData && is_object($timeData[0])) {
+                $this->setAttribute( 'runtime', $timeData[0]->elapsedTime );
+            }
             $this->store();
         }
     }
